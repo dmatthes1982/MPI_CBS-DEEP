@@ -44,10 +44,10 @@ cfg.part = 'mother';
 cfg.channel     = {'all', '-V1', '-V2'};
 cfg.artifact = artifact.mother.artfctdef;
 ft_warning off;
-DEEP_easyArtfctmapPlot(cfg, artifact);                                    % plot artifact map
+DEEP_easyArtfctmapPlot(cfg, artifact);                                      % plot artifact map
 fig = gcf;                                                                  % default position is [560 528 560 420]
 fig.Position = [0 528 560 420];                                             % --> first figure will be placed on the left side of figure 2
-cfgAllArt.mother = DEEP_databrowser(cfg, data);                           % show databrowser view in figure 2
+cfgAllArt.mother = DEEP_databrowser(cfg, data);                             % show databrowser view in figure 2
 close all;                                                                  % figure 1 will be closed with figure 2
 cfgAllArt.mother = keepfields(cfgAllArt.mother, {'artfctdef', 'showcallinfo'});
   
@@ -56,10 +56,10 @@ cfg.part = 'child';
 cfg.channel     = {'all'};
 cfg.artifact = artifact.child.artfctdef;
 ft_warning off;
-DEEP_easyArtfctmapPlot(cfg, artifact);                                    % plot artifact map
+DEEP_easyArtfctmapPlot(cfg, artifact);                                      % plot artifact map
 fig = gcf;                                                                  % default position is [560 528 560 420]
 fig.Position = [0 528 560 420];                                             % --> first figure will be placed on the left side of figure 2
-cfgAllArt.child = DEEP_databrowser(cfg, data);                            % show databrowser view in figure 2
+cfgAllArt.child = DEEP_databrowser(cfg, data);                              % show databrowser view in figure 2
 close all;                                                                  % figure 1 will be closed with figure 2
 cfgAllArt.child = keepfields(cfgAllArt.child, {'artfctdef', 'showcallinfo'});
   

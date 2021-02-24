@@ -13,7 +13,7 @@ clear LASTN
 cprintf([0,0.6,0], '<strong>---------------------------------------------------------------------------------------</strong>\n');
 cprintf([0,0.6,0], '<strong>DEEP: A dual-EEG Pipeline for adult and infant hyperscanning studies. - data processing</strong>\n');
 cprintf([0,0.6,0], '<strong>Version: 0.2</strong>\n');
-cprintf([0,0.6,0], 'Copyright (C) 2018-2019, Daniel Matthes, MPI CBS\n');
+cprintf([0,0.6,0], 'Copyright (C) 2018-2021, Daniel Matthes, MPI CBS\n');
 cprintf([0,0.6,0], '<strong>---------------------------------------------------------------------------------------</strong>\n');
 
 % -------------------------------------------------------------------------
@@ -193,7 +193,7 @@ while selection == false
   fprintf('\nPlease select one option:\n');
   fprintf('[1] - Process all available dyads\n');
   fprintf('[2] - Process all new dyads\n');
-  fprintf('[3] - Process specific dyad\n');
+  fprintf('[3] - Process specific dyads\n');
   fprintf('[4] - Quit data processing\n\n');
   x = input('Option: ');
   

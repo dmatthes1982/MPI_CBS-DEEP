@@ -238,7 +238,12 @@ cfg.part    = 'mother';
 cfg.channel = 'all';
 cfg.trials  = [11,13,20,21,22,23];                                          % keep only the dual conditions
 
-data = DEEP_selectdata(cfg, data);                                        % remove all trials from the mothers dataset in which only the childs data is of interest
+data = DEEP_selectdata(cfg, data);                                          % remove all trials from the mothers dataset in which only the childs data is of interest
 data.child = dataTmp;
+
+endsample = max(data.mother.sampleinfo(:,2));                               % remove artifacts which are not in selected data
+tf = cfg_manart.mother.artfctdef.xxx.artifact(:,1) < endsample;
+cfg_manart.mother.artfctdef.xxx.artifact = ...
+    cfg_manart.mother.artfctdef.xxx.artifact(tf,:);
 
 end

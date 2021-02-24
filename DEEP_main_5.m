@@ -77,7 +77,7 @@ while selection == false
 end
 fprintf('\n');
 
-% use default settings
+% use default threshold
 selection = false;
 while selection == false
   if x ~= 4
@@ -103,7 +103,7 @@ while selection == false
 end
 fprintf('\n');
 
-% use alternative settings
+% use alternative threshold
 if isempty(threshold)
   identifier = {'mothers', 'children'};
   for i = 1:1:2                                                             % specify a independent threshold for mother and child 
@@ -140,6 +140,20 @@ if isempty(threshold)
     fprintf('\n');
   end
 end
+
+% detection of segments in which channels are dead or in saturation
+selection = false;
+while selection == false
+  cprintf([0,0.6,0], 'Do you want to mark segments as artificats in which channels are dead or in saturation?\n');
+  y = input('Select [y/n]: ','s');
+  if ismember(y, {'y','n'})
+    selection = true;
+    deadSegs = y;
+  else
+    selection = false;
+  end
+end
+fprintf('\n');
 
 % channel selection (default settings)
 selection = false;
@@ -224,7 +238,7 @@ if ~(exist(file_path, 'file') == 2)                                         % ch
   cfg.type        = 'settings';
   cfg.sessionStr  = sessionStr;
   
-  DEEP_createTbl(cfg);                                                    % create settings file
+  DEEP_createTbl(cfg);                                                      % create settings file
 end
 
 T = readtable(file_path);                                                   % update settings table
@@ -232,6 +246,7 @@ warning off;
 T.artMethod(numOfPart) = {method};
 T.artTholdMother(numOfPart) = threshold(1);
 T.artTholdChild(numOfPart)  = threshold(2);
+T.artDeadSegs(numOfPart) = {deadSegs};
 T.artChanMother(numOfPart)  = channelsMother;
 T.artChanChild(numOfPart)   = channelsChild;
 warning on;
@@ -247,6 +262,26 @@ for i = numOfPart
   fprintf('<strong>Dyad %d</strong>\n', i);
   fprintf('Load preprocessed data...\n');
   DEEP_loadData( cfg );
+  
+  if strcmp(deadSegs, 'y')
+    cfg             = [];
+    cfg.srcFolder   = strcat(desPath, '01a_raw/');
+    cfg.filename    = sprintf('coSMIC_d%02d_01a_raw', i);
+    cfg.sessionStr  = sessionStr;
+
+    fprintf('Load raw data...\n');
+    DEEP_loadData( cfg );
+    
+    cfg             = [];
+    cfg.srcFolder   = strcat(desPath, '02a_badchan/');
+    cfg.filename    = sprintf('coSMIC_d%02d_02a_badchan', i);
+    cfg.sessionStr  = sessionStr;
+
+    fprintf('Load bad channels specification...\n\n');
+    DEEP_loadData( cfg );
+  else
+    fprintf('\n');
+  end
 
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '01b_manart/');
@@ -260,6 +295,11 @@ for i = numOfPart
   cfg             = [];
   cfg.channel     = {selChanMother, selChanChild};
   cfg.method      = method;                                                 % artifact detection method
+  if strcmp(deadSegs, 'y')
+    cfg.deadsegs   = 'yes';                                                 % detection of segments in which at least one channel is dead or in saturation
+    cfg.badchan    = {data_badchan.mother.badChan, ...
+                        data_badchan.child.badChan};
+  end
   cfg.sliding     = sliding;                                                % use sliding window or not
   cfg.winsize     = winsize;                                                % size of sliding window
   cfg.continuous  = 'no';                                                   % data is trial-based
@@ -271,7 +311,11 @@ for i = numOfPart
   cfg.stddev      = threshold;                                              % stddev: threshold uV
   cfg.mad         = threshold;                                              % mad: multiples of median absolute deviation
 
-  cfg_autoart     = DEEP_autoArtifact(cfg, data_preproc2);
+  if strcmp(deadSegs, 'n')
+    cfg_autoart     = DEEP_autoArtifact(cfg, data_preproc2);
+  else
+    cfg_autoart     = DEEP_autoArtifact(cfg, data_preproc2, data_raw);
+  end
   
   % import existing manual selected artifacts
   if importArt == true
@@ -363,4 +407,4 @@ end
 clear file_path numOfSources sourceList cfg i x y selection T threshold ...
       method winsize sliding default_threshold threshold_range ...
       identifier importArt sel channelsChild channelsMother label ...
-      selChanChild selChanMother
+      selChanChild selChanMother deadSegs data_raw data_badchan
