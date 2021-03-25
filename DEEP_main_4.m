@@ -61,20 +61,17 @@ while selection == false
   x = input('Option: ');
 
   if x == 1
-     tmp =1;
      selection = true;
      refchannel = {'all', '-V1', '-V2'};
      reference = {'CAR'};
   elseif x == 2 && mastoid == true
-     tmp =1;
      selection = true;
      refchannel = 'TP10';
      reference = {'LM'};
   elseif x == 3                                                             %IRA_MOD
-        tmp = 2;
-        selection = true;
-        reference = {'RobustAvg'};
-        refchannel = 'RAR';   
+     selection = true;
+     refchannel = 'RAR';
+     reference = {'RobustAvg'};     
   else
     cprintf([1,0.5,0], 'Wrong input!\n\n');
   end
@@ -192,24 +189,24 @@ for i = numOfPart
   DEEP_saveData(cfg, 'data_eogcomp', data_eogcomp);
   fprintf('Data stored!\n\n');
 
-%   % add selected ICA components to the settings file                      %IRA_MOD
-%   if isempty(data_eogcomp.mother.elements)
-%     ICAcompMother = {'---'};
-%   else
-%     ICAcompMother = {strjoin(data_eogcomp.mother.elements,',')};
-%   end
-%   if isempty(data_eogcomp.child.elements)
-%     ICAcompChild = {'---'};
-%   else
-%     ICAcompChild = {strjoin(data_eogcomp.child.elements,',')};
-%   end
-%   warning off;
-%   T.ICAcompMother(i)  = ICAcompMother;
-%   T.ICAcompChild(i)   = ICAcompChild;
-%   warning on;
-% 
-%   delete(settings_file);
-%   writetable(T, settings_file);
+  % add selected ICA components to the settings file
+  if isempty(data_eogcomp.mother.elements)
+    ICAcompMother = {'---'};
+  else
+    ICAcompMother = {strjoin(data_eogcomp.mother.elements,',')};
+  end
+  if isempty(data_eogcomp.child.elements)
+    ICAcompChild = {'---'};
+  else
+    ICAcompChild = {strjoin(data_eogcomp.child.elements,',')};
+  end
+  warning off;
+  T.ICAcompMother(i)  = ICAcompMother;
+  T.ICAcompChild(i)   = ICAcompChild;
+  warning on;
+
+  delete(settings_file);
+  writetable(T, settings_file);
 
   % load basic bandpass filtered data
   cfg             = [];
@@ -255,8 +252,7 @@ for i = numOfPart
   DEEP_loadData( cfg );
 
   data_eyecor = DEEP_repairBadChan( data_badchan, data_eyecor );
-  %clear data_badchan                                                       %IRA_MOD
-
+  
   %% re-referencing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   fprintf('<strong>Rereferencing</strong>\n');
 
@@ -265,18 +261,13 @@ for i = numOfPart
 
   ft_info off;
   
-%  so here some code that Ira wrote just to give additonal option for
-%  robust avg regerence - if option 3 is specified at the beginning 
-%  I also changed the code at the beginning to add in an third user input
-%  option
-    
-  if tmp ==1                                                                %IRA_MOD
-    data_preproc2 = DEEP_reref( cfg, data_eyecor);
-  elseif tmp ==2
-    data_preproc2 = DEEP_robustRef(data_eyecor, data_badchan);
+  if strcmp('RobustAvg', reference(1))                                      %IRA_MOD
+      data_preproc2 = DEEP_robustRef(data_eyecor, data_badchan);
+  else
+      data_preproc2 = DEEP_reref( cfg, data_eyecor);
   end
-  
   clear data_badchan
+  
   ft_info on;
 
   % export the bad channels in a *.mat file

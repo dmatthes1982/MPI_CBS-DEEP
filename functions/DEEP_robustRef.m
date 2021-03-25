@@ -1,42 +1,63 @@
- function [data_out] =DEEP_robustRef(data_continuous, data_in)
+function [data_out] =DEEP_robustRef(data_in, data_badchan)
+% DEEP_ROBUSTREF does an average based re-referencing of eeg data using 
+% only good channels for building the reference
+%
+% Use as
+%   [data_out] =DEEP_robustRef(data_in, badchan)
+%
+% data_badchan is generated in part 2 of the pipeline during the first
+% preprocessing step
 
-% data in is data from step 2 data_noisy that has subfield .outliers e.g.,
-% output form DEEP_estNoiseyChan
+% Copyright (C) 2021, Ira Marriott Haresign, University of East London,
+% Daniel Matthes, HTWK Leipzig, Laboratory for Biosignal Processing
 
 % get noisy chan numbers
-noisy_chans_mum = find(data_in.mother.outliers==1);
-noisy_chans_child = find(data_in.child.outliers==1); 
+noisy_chans_mum = data_badchan.mother.outliers==1;
+noisy_chans_child = data_badchan.child.outliers==1; 
 
-% remove noisy chans from data
-tempdat_mother = data_continuous.mother.trial{1,1};
-tmpdat_mother = tempdat_mother(1:30,:); % exclude eog channels from the reference
+% -------------------------------------------------------------------------
+% Re-Referencing of the mother's data
+% -------------------------------------------------------------------------
+for i=1:1:length(data_in.mother.trial)
+    mum_input = data_in.mother.trial{i};
+    % exclude EOGV and EOGH from rereferencing
+    mum_reduced = mum_input(1:end-2,:);                                     % Note: number of channels is not fixed, but EOGH and EOGV are always at the end
 
-tmpM = tmpdat_mother;
-tmpM(noisy_chans_mum,:)=[];
+    % remove noisy chans from data
+    tmpM = mum_reduced;
+    tmpM(noisy_chans_mum,:)=[];
+    
+    % get robust average reference
+    mum_robustRef = mean(tmpM,1);
+    
+    % rereference continuous data to robustRef
+    mum_referenced = mum_reduced - mum_robustRef;
 
-tempdat_child = data_continuous.child.trial{1,1};
-tmpdat_child = tempdat_child(1:30,:);
+    % add back previously removed EOGV and EOGH channels 
+    eog_chansM = mum_input(end-1:end, :);
+    
+    % replace trial with rereferenced one
+    data_in.mother.trial{i} = cat(1, mum_referenced, eog_chansM);
+end
 
-tmpC = tmpdat_child;
-tmpC(noisy_chans_child,:)=[];
+% -------------------------------------------------------------------------
+% Re-Referencing of the child's data
+% -------------------------------------------------------------------------
+for i=1:1:length(data_in.child.trial)
+    child_input = data_in.child.trial{i};                                   % Note: there are no EOGV and EOGH components in the child's dataset
+    
+    % remove noisy chans from data, ther are no
+    tmpC = child_input;
+    tmpC(noisy_chans_child,:)=[];
 
-% get robust average reference
-mum_robustRef = mean(tmpM,1);
-child_robustRef = mean(tmpC,1);
+    % get robust average reference
+    child_robustRef = mean(tmpC,1);
+    
+    % rereference continuous data to robustRef
+    child_referenced = child_input - child_robustRef;
+    
+    % replace trial with rereferenced one
+    data_in.child.trial{i} = child_referenced;
+end
 
-% re reference continuous data to robustRef
-mum_referenced = tempdat_mother - mum_robustRef;
-child_referenced = tempdat_child - child_robustRef;
-
-% add back eogs 
-extra_chansM = tempdat_mother(31:size(tempdat_mother,1),:);
-extra_chansC = tempdat_child(31:size(tempdat_child,1),:);
-
-
-data_continuous.mother.trial{1,1} = cat(1, mum_referenced, extra_chansM);
-data_continuous.child.trial{1,1} = cat(1, child_referenced, extra_chansC);
-
-% done
-data_out = data_continuous;
-
-
+data_out = data_in;
