@@ -3,7 +3,7 @@ if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subFolder = '04c_preproc2/';
   cfg.filename  = 'coSMIC_d01_04c_preproc2';
-  sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));             % estimate current session number
+  sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));               % estimate current session number
 end
 
 if ~exist('desPath', 'var')
@@ -55,13 +55,24 @@ fprintf('\n');
 %% passband specifications
 if passband == true
   [pbSpec(1:4).freqRange]   = deal([4 7],[8 12],[13 30],[31 48]);
+  [pbSpec_Child(1:4).freqRange] = deal([4 7],[8 12],[13 30],[31 48]);
 else
-  passband = DEEP_pbSelectbox();
+  cfg.boxName = 'Specify passbands [MOTHER]';
+  passband = DEEP_pbSelectbox(cfg);
+  cfg.boxName = 'Specify passbands [INFANT]';
+  passband_Child = DEEP_pbSelectbox(cfg);
+  
   [pbSpec(1:4).freqRange]   = deal(passband{:});
+  [pbSpec_Child(1:4).freqRange]   = deal(passband_Child{:});
+  
 end
 [pbSpec(1:4).fileSuffix]    = deal('Theta','Alpha','Beta','Gamma');
 [pbSpec(1:4).name]          = deal('theta','alpha','beta','gamma');
 [pbSpec(1:4).filtOrdBase]   = deal(500, 250, 250, 250);
+
+[pbSpec_Child(1:4).fileSuffix]    = deal('Theta','Alpha','Beta','Gamma');
+[pbSpec_Child(1:4).name]          = deal('theta','alpha','beta','gamma');
+[pbSpec_Child(1:4).filtOrdBase]   = deal(500, 250, 250, 250);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% bandpass filtering
@@ -91,9 +102,11 @@ for i = numOfPart
   for j = 1:1:numel(pbSpec)
     cfg           = [];
     cfg.bpfreq    = pbSpec(j).freqRange;
+    cfg.bpfreq_Child = pbSpec_Child(j).freqRange;
+    
     cfg.filtorder = fix(pbSpec(j).filtOrdBase / filtCoeffDiv);
     cfg.channel   = {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2'};
-
+    
     data_bpfilt   = DEEP_bpFiltering(cfg, data_preproc2);
   
     % export the filtered data into a *.mat file

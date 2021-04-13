@@ -74,7 +74,7 @@ writetable(T, file_path);
 %% passband specifications
 [pbSpec(1:4).fileSuffix]    = deal('Theta','Alpha','Beta','Gamma');
 [pbSpec(1:4).name]          = deal('theta','alpha','beta','gamma');
-[pbSpec(1:4).winLength]     = deal(5, 1, 1, 1);
+[pbSpec(1:4).winLength]     = deal(1, 1, 1, 1);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Segmentation, artifact rejection, PLV and mPLV estimation
@@ -138,7 +138,24 @@ for i = numOfPart
         fprintf('\n');
       end
     end
-  
+    
+     % export the segmentations into a *.mat file
+    cfg             = [];
+    cfg.desFolder   = strcat(desPath, '07c_segment/');
+    cfg.filename    = sprintf('coSMIC_d%02d_07c_segment%s', i, ...
+                                pbSpec(j).fileSuffix);
+    cfg.sessionStr  = sessionStr;
+
+    file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
+                       '.mat');
+
+    fprintf('Saving Segmentations (%s: %g-%gHz) of dyad %d in:\n', ...
+             pbSpec(j).name, data_hilbert.bpFreq, i);
+    fprintf('%s ...\n', file_path);
+    DEEP_saveData(cfg, 'data_hilbert', data_hilbert);
+    fprintf('Data stored!\n');
+    clear data_plv
+    
     % calculate PLV and meanPLV %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     cfg           = [];
     cfg.winlen    = pbSpec(j).winLength;                                    % window length for one PLV value in seconds

@@ -97,6 +97,9 @@ end
 if ~exist(strcat(desPath, '07b_mplv'), 'dir')
   mkdir(strcat(desPath, '07b_mplv'));
 end
+if ~exist(strcat(desPath, '07c_segment'), 'dir')
+  mkdir(strcat(desPath, '07c_segment'));
+end
 if ~exist(strcat(desPath, '08a_tfr'), 'dir')
   mkdir(strcat(desPath, '08a_tfr'));
 end
