@@ -37,7 +37,7 @@ fprintf('<strong>Calc Hilbert phase of mothers data at %g Hz...</strong>\n', ...
 data.mother   = hilbertTransform(cfg, data.mother);        
           
 fprintf('<strong>Calc Hilbert phase of childs data at %g Hz...</strong>\n', ...           
-         data.centerFreq);
+         data.centerFreq_Child);
 data.child   = hilbertTransform(cfg, data.child);
 
 end

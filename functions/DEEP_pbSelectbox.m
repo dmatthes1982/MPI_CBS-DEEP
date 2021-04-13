@@ -1,4 +1,4 @@
-function [passband] = DEEP_pbSelectbox()
+function [passband] = DEEP_pbSelectbox( cfg )
 % DEEP_PBSELECTBOX is a function, which displays a small GUI for the
 % specification of passbands. It returns a cell array including the minimum
 % and maximum frequency of each passband.
@@ -18,7 +18,8 @@ function [passband] = DEEP_pbSelectbox()
 pbSelectbox = uifigure;
 pbSelectbox.Position = [150 400 360 215];
 pbSelectbox.CloseRequestFcn = @(pbSelectbox, evt)SaveButtonPushed(pbSelectbox);
-pbSelectbox.Name = 'Specifiy passbands';
+%pbSelectbox.Name = 'Specifiy passbands';
+pbSelectbox.Name = cfg.boxName;
 
 % Create fmin label
 fminlbl = uilabel(pbSelectbox);
