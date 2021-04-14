@@ -42,10 +42,10 @@ while selection == false
   x = input('Select [y/n]: ','s');
   if strcmp('y', x)
     selection = true;
-    passband = true;
+    passbandMother = true;
   elseif strcmp('n', x)
     selection = true;
-    passband = false;
+    passbandMother = false;
   else
     selection = false;
   end
@@ -53,26 +53,26 @@ end
 fprintf('\n');
 
 %% passband specifications
-if passband == true
-  [pbSpec(1:4).freqRange]   = deal([4 7],[8 12],[13 30],[31 48]);
-  [pbSpec_Child(1:4).freqRange] = deal([4 7],[8 12],[13 30],[31 48]);
+if passbandMother == true
+  [pbSpecMother(1:4).freqRange]   = deal([4 7],[8 12],[13 30],[31 48]);
+  [pbSpecChild(1:4).freqRange]    = deal([4 7],[8 12],[13 30],[31 48]);
 else
   cfg.boxName = 'Specify passbands [MOTHER]';
-  passband = DEEP_pbSelectbox(cfg);
+  passbandMother = DEEP_pbSelectbox(cfg);
   cfg.boxName = 'Specify passbands [INFANT]';
-  passband_Child = DEEP_pbSelectbox(cfg);
+  passbandChild = DEEP_pbSelectbox(cfg);
   
-  [pbSpec(1:4).freqRange]   = deal(passband{:});
-  [pbSpec_Child(1:4).freqRange]   = deal(passband_Child{:});
+  [pbSpecMother(1:4).freqRange]   = deal(passbandMother{:});
+  [pbSpecChild(1:4).freqRange]    = deal(passbandChild{:});
   
 end
-[pbSpec(1:4).fileSuffix]    = deal('Theta','Alpha','Beta','Gamma');
-[pbSpec(1:4).name]          = deal('theta','alpha','beta','gamma');
-[pbSpec(1:4).filtOrdBase]   = deal(500, 250, 250, 250);
+[pbSpecMother(1:4).fileSuffix]    = deal('Theta','Alpha','Beta','Gamma');
+[pbSpecMother(1:4).name]          = deal('theta','alpha','beta','gamma');
+[pbSpecMother(1:4).filtOrdBase]   = deal(500, 250, 250, 250);
 
-[pbSpec_Child(1:4).fileSuffix]    = deal('Theta','Alpha','Beta','Gamma');
-[pbSpec_Child(1:4).name]          = deal('theta','alpha','beta','gamma');
-[pbSpec_Child(1:4).filtOrdBase]   = deal(500, 250, 250, 250);
+[pbSpecChild(1:4).fileSuffix]     = deal('Theta','Alpha','Beta','Gamma');
+[pbSpecChild(1:4).name]           = deal('theta','alpha','beta','gamma');
+[pbSpecChild(1:4).filtOrdBase]    = deal(500, 250, 250, 250);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% bandpass filtering
@@ -99,12 +99,12 @@ for i = numOfPart
   data_preproc2 = DEEP_selectdata(cfg, data_preproc2);
 
   % bandpass filter data
-  for j = 1:1:numel(pbSpec)
+  for j = 1:1:numel(pbSpecMother)
     cfg           = [];
-    cfg.bpfreq    = pbSpec(j).freqRange;
-    cfg.bpfreq_Child = pbSpec_Child(j).freqRange;
+    cfg.bpfreqMother    = pbSpecMother(j).freqRange;
+    cfg.bpfreqChild     = pbSpecChild(j).freqRange;
     
-    cfg.filtorder = fix(pbSpec(j).filtOrdBase / filtCoeffDiv);
+    cfg.filtorder = fix(pbSpecMother(j).filtOrdBase / filtCoeffDiv);
     cfg.channel   = {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2'};
     
     data_bpfilt   = DEEP_bpFiltering(cfg, data_preproc2);
@@ -113,14 +113,14 @@ for i = numOfPart
     cfg             = [];
     cfg.desFolder   = strcat(desPath, '06a_bpfilt/');
     cfg.filename    = sprintf('coSMIC_d%02d_06a_bpfilt%s', i, ...
-                                pbSpec(j).fileSuffix);
+                                pbSpecMother(j).fileSuffix);
     cfg.sessionStr  = sessionStr;
 
     file_path = strcat(cfg.desFolder, cfg.filename, '_', ...
                         cfg.sessionStr, '.mat');
                    
     fprintf(['Saving bandpass filtered data (%s: %g-%gHz) of dyad %d '...
-              'in:\n'], pbSpec(j).name, pbSpec(j).freqRange, i);
+              'in:\n'], pbSpecMother(j).name, pbSpecMother(j).freqRange, i);
     fprintf('%s ...\n', file_path);
     DEEP_saveData(cfg, 'data_bpfilt', data_bpfilt);
     fprintf('Data stored!\n\n');
@@ -136,15 +136,15 @@ for i = numOfPart
   fprintf('<strong>Dyad %d</strong>\n\n', i);
 
   % calculate hilbert phase
-  for j = 1:1:numel(pbSpec)
+  for j = 1:1:numel(pbSpecMother)
     cfg             = [];
     cfg.srcFolder   = strcat(desPath, '06a_bpfilt/');
     cfg.filename    = sprintf('coSMIC_d%02d_06a_bpfilt%s', i, ...
-                                pbSpec(j).fileSuffix);
+                                pbSpecMother(j).fileSuffix);
     cfg.sessionStr  = sessionStr;
 
     fprintf('Load the at %s (%g-%gHz) bandpass filtered data...\n', ...
-              pbSpec(j).name, pbSpec(j).freqRange);
+              pbSpecMother(j).name, pbSpecMother(j).freqRange);
     DEEP_loadData( cfg );
 
     data_hilbert = DEEP_hilbertPhase(data_bpfilt);
@@ -153,14 +153,14 @@ for i = numOfPart
     cfg             = [];
     cfg.desFolder   = strcat(desPath, '06b_hilbert/');
     cfg.filename    = sprintf('coSMIC_d%02d_06b_hilbert%s', i, ...
-                                pbSpec(j).fileSuffix);
+                                pbSpecMother(j).fileSuffix);
     cfg.sessionStr  = sessionStr;
 
     file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                        '.mat');
 
     fprintf(['Saving Hilbert phase data (%s: %g-%gHz) of dyad %d  '...
-              'in:\n'], pbSpec(j).name, pbSpec(j).freqRange, i);
+              'in:\n'], pbSpecMother(j).name, pbSpecMother(j).freqRange, i);
     fprintf('%s ...\n', file_path);
     DEEP_saveData(cfg, 'data_hilbert', data_hilbert);
     fprintf('Data stored!\n\n');

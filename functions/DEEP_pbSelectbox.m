@@ -6,11 +6,20 @@ function [passband] = DEEP_pbSelectbox( cfg )
 % Use as
 %   [ passband ]  = DEEP_pbSelectbox( cfg )
 %
+% The configuration options are
+%   pbSelectbox.Name = name of the select box;
+%
 % This function requires the fieldtrip toolbox.
 %
 % SEE also UIFIGURE, UIEDITFIELD, UIBUTTON, UIRESUME, UIWAIT
 
 % Copyright (C) 2019, Daniel Matthes, MPI CBS
+
+
+% -------------------------------------------------------------------------
+% Get and check config options
+% -------------------------------------------------------------------------
+boxName    = ft_getopt(cfg, 'boxName', {'Specify passbands [MOTHER]'});
 
 % -------------------------------------------------------------------------
 % Create GUI
@@ -18,8 +27,7 @@ function [passband] = DEEP_pbSelectbox( cfg )
 pbSelectbox = uifigure;
 pbSelectbox.Position = [150 400 360 215];
 pbSelectbox.CloseRequestFcn = @(pbSelectbox, evt)SaveButtonPushed(pbSelectbox);
-%pbSelectbox.Name = 'Specifiy passbands';
-pbSelectbox.Name = cfg.boxName;
+pbSelectbox.Name = boxName;
 
 % Create fmin label
 fminlbl = uilabel(pbSelectbox);
