@@ -52,8 +52,8 @@ centerFreqChild = (bpfreqChild(2) + bpfreqChild(1))/2;
 % -------------------------------------------------------------------------
 % Bandpass filtering
 % -------------------------------------------------------------------------
-data.centerFreq = [];
-data.centerFreq_Child = [];
+data.centerFreqMother = [];
+data.centerFreqChild = [];
 
 fprintf('<strong>Apply bandpass to mothers data with a center frequency of %g Hz...</strong>\n', ...           
           centerFreqMother);
