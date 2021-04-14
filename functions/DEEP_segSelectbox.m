@@ -11,7 +11,7 @@ function [segmentation] = DEEP_segSelectbox( )
 % SEE also UIFIGURE, UIEDITFIELD, UIBUTTON, UIRESUME, UIWAIT
 
 
-% Copyright (C) 2021, Umut C. Vural, University of Potsdam & MPI CBS
+% Copyright (C) 2021
 % Daniel Matthes, HTWK Leipzig, Laboratory for Biosignal Processing
 
 
