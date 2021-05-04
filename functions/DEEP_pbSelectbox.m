@@ -7,7 +7,7 @@ function [passband] = DEEP_pbSelectbox( cfg )
 %   [ passband ]  = DEEP_pbSelectbox( cfg )
 %
 % The configuration options are
-%   pbSelectbox.Name = name of the select box;
+%   cfg.boxName = name of the select box;
 %
 % This function requires the fieldtrip toolbox.
 %

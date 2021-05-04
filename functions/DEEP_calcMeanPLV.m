@@ -18,7 +18,7 @@ function [ data ] = DEEP_calcMeanPLV( data )
 % -------------------------------------------------------------------------
 
 fprintf('<strong>Calc mean PLVs with a center frequency of %g Hz...</strong>\n', ...           
-          data.centerFreq);
+          data.centerFreqMother);
 numOfTrials = size(data.dyad.PLV, 2);
 numOfElecA = size(data.dyad.PLV{1}, 1);
 numOfElecB = size(data.dyad.PLV{1}, 2);

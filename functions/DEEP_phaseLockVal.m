@@ -44,10 +44,12 @@ dataTmp = struct;
 dataTmp.dyad = [];
 
 fprintf('<strong>Calc PLVs with a center frequency of %g Hz...</strong>\n', ...           
-         data.centerFreq);
+         data.centerFreqMother);
 dataTmp.dyad  = phaseLockingValue(cfg, data.mother, data.child);
-dataTmp.centerFreq = data.centerFreq;
-dataTmp.bpFreq = data.bpFreqMother;
+dataTmp.centerFreqMother = data.centerFreqMother;
+dataTmp.bpFreqMother = data.bpFreqMother;
+dataTmp.centerFreqChild = data.centerFreqChild;
+dataTmp.bpFreqChild = data.bpFreqChild;
 
 data = dataTmp;
 end

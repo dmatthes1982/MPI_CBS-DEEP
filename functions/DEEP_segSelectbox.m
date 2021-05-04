@@ -4,7 +4,7 @@ function [segmentation] = DEEP_segSelectbox( )
 % segmentation window lengths.
 %
 % Use as
-%   [ segmentation ]  = DEEP_segSelectbox( cfg )
+%   [ segmentation ]  = DEEP_segSelectbox()
 %
 % This function requires the fieldtrip toolbox.
 %
@@ -74,12 +74,6 @@ btn = uibutton(segSelectbox, 'push');
 btn.ButtonPushedFcn = @(btn, evt)SaveButtonPushed(segSelectbox);
 btn.Position = [130 27 100 21];
 btn.Text = 'Save';
-
-% Create ValueChangedFcn pointers
-theta.sdur.ValueChangedFcn    = @(sdur, evt)EditFieldValueChanged(theta);
-alpha.sdur.ValueChangedFcn    = @(sdur, evt)EditFieldValueChanged(alpha);
-beta.sdur.ValueChangedFcn     = @(sdur, evt)EditFieldValueChanged(beta);
-gamma.sdur.ValueChangedFcn    = @(sdur, evt)EditFieldValueChanged(gamma);
 
 % -------------------------------------------------------------------------
 % Wait for user input and return selection after btn 'save' was pressed

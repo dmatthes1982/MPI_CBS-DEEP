@@ -42,10 +42,10 @@ while selection == false
   x = input('Select [y/n]: ','s');
   if strcmp('y', x)
     selection = true;
-    passbandMother = true;
+    passband = true;
   elseif strcmp('n', x)
     selection = true;
-    passbandMother = false;
+    passband = false;
   else
     selection = false;
   end
@@ -53,7 +53,7 @@ end
 fprintf('\n');
 
 %% passband specifications
-if passbandMother == true
+if passband == true
   [pbSpecMother(1:4).freqRange]   = deal([4 7],[8 12],[13 30],[31 48]);
   [pbSpecChild(1:4).freqRange]    = deal([4 7],[8 12],[13 30],[31 48]);
 else
@@ -64,8 +64,8 @@ else
   
   [pbSpecMother(1:4).freqRange]   = deal(passbandMother{:});
   [pbSpecChild(1:4).freqRange]    = deal(passbandChild{:});
-  
 end
+
 [pbSpecMother(1:4).fileSuffix]    = deal('Theta','Alpha','Beta','Gamma');
 [pbSpecMother(1:4).name]          = deal('theta','alpha','beta','gamma');
 [pbSpecMother(1:4).filtOrdBase]   = deal(500, 250, 250, 250);
@@ -100,15 +100,14 @@ for i = numOfPart
 
   % bandpass filter data
   for j = 1:1:numel(pbSpecMother)
-    cfg           = [];
+    cfg                 = [];
     cfg.bpfreqMother    = pbSpecMother(j).freqRange;
     cfg.bpfreqChild     = pbSpecChild(j).freqRange;
-    
     cfg.filtorder = fix(pbSpecMother(j).filtOrdBase / filtCoeffDiv);
     cfg.channel   = {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2'};
-    
+
     data_bpfilt   = DEEP_bpFiltering(cfg, data_preproc2);
-  
+
     % export the filtered data into a *.mat file
     cfg             = [];
     cfg.desFolder   = strcat(desPath, '06a_bpfilt/');
@@ -169,5 +168,5 @@ for i = numOfPart
 end
 
 %% clear workspace
-clear cfg file_path numOfSources sourceList i filtCoeffDiv pbSpec j ...
-      passband x selection
+clear cfg file_path numOfSources sourceList i filtCoeffDiv j passband ...
+      pbSpecMother pbSpecChild x selection

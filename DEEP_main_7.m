@@ -71,7 +71,6 @@ warning on;
 delete(file_path);
 writetable(T, file_path);
 
-
 % option to define segment durations manually
 selection = false;
 while selection == false
@@ -95,17 +94,16 @@ while selection == false
 end
 fprintf('\n');
 
-
 %% segment duration specifications
+[pbSpec(1:4).fileSuffix]    = deal('Theta','Alpha','Beta','Gamma');
+[pbSpec(1:4).name]          = deal('theta','alpha','beta','gamma');
+    
 if segmentation == true
     [pbSpec(1:4).winLength]     = deal(5, 1, 1, 1);
 else
     segmentation = DEEP_segSelectbox();
-    [pbSpec(1:4).winLength]   = deal(segmentation{:});
+    [pbSpec(1:4).winLength]     = deal(segmentation{:});
 end
-
-    [pbSpec(1:4).fileSuffix]    = deal('Theta','Alpha','Beta','Gamma');
-    [pbSpec(1:4).name]          = deal('theta','alpha','beta','gamma');
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Segmentation, artifact rejection, PLV and mPLV estimation
@@ -214,7 +212,7 @@ for i = numOfPart
                        '.mat');
 
     fprintf('Saving PLVs (%s: %g-%gHz) of dyad %d in:\n', ...
-             pbSpec(j).name, data_plv.bpFreq, i);
+             pbSpec(j).name, data_plv.bpFreqMother, i);
     fprintf('%s ...\n', file_path);
     DEEP_saveData(cfg, 'data_plv', data_plv);
     fprintf('Data stored!\n');
@@ -231,7 +229,7 @@ for i = numOfPart
                        '.mat');
 
     fprintf('Saving mean PLVs (%s: %g-%gHz) of dyad %d in:\n', ...
-             pbSpec(j).name, data_mplv.bpFreq, i);
+             pbSpec(j).name, data_mplv.bpFreqMother, i);
     fprintf('%s ...\n', file_path);
     DEEP_saveData(cfg, 'data_mplv', data_mplv);
     fprintf('Data stored!\n\n');
@@ -242,4 +240,4 @@ end
 
 %% clear workspace
 clear cfg file_path sourceList numOfSources i artifactRejection ...
-      artifactAvailable x choise T pbSpec j
+      artifactAvailable x choise T pbSpec j selection segmentation

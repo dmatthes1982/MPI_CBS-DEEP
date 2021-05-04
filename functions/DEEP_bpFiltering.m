@@ -41,7 +41,7 @@ cfg.trials          = 'all';                                                % ap
 cfg.channel         = channel;
 cfg.bpfilter        = 'yes';
 cfg.bpfilttype      = 'fir';                                                % use a simple fir
-cfg.bpfreq          = bpfreqMother;                                               % define bandwith
+cfg.bpfreq          = bpfreqMother;                                         % define bandwith
 cfg.feedback        = 'no';                                                 % suppress feedback output
 cfg.showcallinfo    = 'no';                                                 % suppress function call output
 cfg.bpfiltord       = order;                                                % define filter order
@@ -64,7 +64,6 @@ fprintf('<strong>Apply bandpass to childs data with a center frequency of %g Hz.
 cfg.bpfreq = bpfreqChild;
 data.child   = ft_preprocessing(cfg, data.child);
  
-cfg.bpfreq = bpfreqMother;
 data.centerFreqMother = centerFreqMother;
 data.bpFreqMother = bpfreqMother;
 
