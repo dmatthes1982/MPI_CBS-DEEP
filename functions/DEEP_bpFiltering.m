@@ -9,9 +9,10 @@ function [ data ] = DEEP_bpFiltering( cfg, data)
 % DEEP_PREPROCESSING or DEEP_SEGMENTATION 
 %
 % The configuration options are
-%   cfg.bpfreq      = passband range [begin end] (default: [1.9 2.1])
-%   cfg.filtorder   = define order of bandpass filter (default: 250)
-%   cfg.channel     = channel selection (default: {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2'}
+%   cfg.bpfreqMother  = passband range [begin end] (default: [1.9 2.1])
+%   cfg.bpfreqChild   = passband range [begin end] (default: [1.9 2.1])
+%   cfg.filtorder     = define order of bandpass filter (default: 250)
+%   cfg.channel       = channel selection (default: {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2'}
 %
 % This function is configured with a fixed filter order, to generate
 % comparable filter charakteristics for every operating point.
@@ -26,10 +27,11 @@ function [ data ] = DEEP_bpFiltering( cfg, data)
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-bpfreq    = ft_getopt(cfg, 'bpfreq', [1.9 2.1]);
-order     = ft_getopt(cfg, 'filtorder', 250);
-channel   = ft_getopt(cfg, 'channel', {'all', '-REF', '-EOGV', '-EOGH', ... % apply bandpass to every channel except REF, EOGV, EOGH, V1 and V2
-                                       '-V1', '-V2' });
+bpfreqMother    = ft_getopt(cfg, 'bpfreqMother', [1.9 2.1]);
+bpfreqChild     = ft_getopt(cfg, 'bpfreqChild', [1.9 2.1]);
+order           = ft_getopt(cfg, 'filtorder', 250);
+channel         = ft_getopt(cfg, 'channel', {'all', '-REF', '-EOGV', ...    % apply bandpass to every channel except REF, EOGV, EOGH, V1 and V2
+                                            '-EOGH', '-V1', '-V2' });
 
 % -------------------------------------------------------------------------
 % Filtering settings
@@ -39,27 +41,34 @@ cfg.trials          = 'all';                                                % ap
 cfg.channel         = channel;
 cfg.bpfilter        = 'yes';
 cfg.bpfilttype      = 'fir';                                                % use a simple fir
-cfg.bpfreq          = bpfreq;                                               % define bandwith
+cfg.bpfreq          = bpfreqMother;                                               % define bandwith
 cfg.feedback        = 'no';                                                 % suppress feedback output
 cfg.showcallinfo    = 'no';                                                 % suppress function call output
 cfg.bpfiltord       = order;                                                % define filter order
 
-centerFreq = (bpfreq(2) + bpfreq(1))/2;
+centerFreqMother = (bpfreqMother(2) + bpfreqMother(1))/2;
+centerFreqChild = (bpfreqChild(2) + bpfreqChild(1))/2;
 
 % -------------------------------------------------------------------------
 % Bandpass filtering
 % -------------------------------------------------------------------------
-data.centerFreq = [];
+data.centerFreqMother = [];
+data.centerFreqChild = [];
 
 fprintf('<strong>Apply bandpass to mothers data with a center frequency of %g Hz...</strong>\n', ...           
-          centerFreq);
+          centerFreqMother);
 data.mother   = ft_preprocessing(cfg, data.mother);        
           
 fprintf('<strong>Apply bandpass to childs data with a center frequency of %g Hz...</strong>\n', ...           
-          centerFreq);
+          centerFreqChild);
+cfg.bpfreq = bpfreqChild;
 data.child   = ft_preprocessing(cfg, data.child);
-  
-data.centerFreq = centerFreq;
-data.bpFreq = bpfreq;
+ 
+cfg.bpfreq = bpfreqMother;
+data.centerFreqMother = centerFreqMother;
+data.bpFreqMother = bpfreqMother;
+
+data.centerFreqChild = centerFreqChild;
+data.bpFreqChild = bpfreqChild;
 
 end

@@ -3,7 +3,7 @@ if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subFolder = '06b_hilbert/';
   cfg.filename  = 'coSMIC_d01_06b_hilbertGamma';
-  sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));             % estimate current session number
+  sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));               % estimate current session number
 end
 
 if ~exist('desPath', 'var')
@@ -61,7 +61,7 @@ if ~(exist(file_path, 'file') == 2)                                         % ch
   cfg.type        = 'settings';
   cfg.sessionStr  = sessionStr;
   
-  DEEP_createTbl(cfg);                                                    % create settings file
+  DEEP_createTbl(cfg);                                                      % create settings file
 end
 
 T = readtable(file_path);                                                   % update settings table
@@ -71,11 +71,42 @@ warning on;
 delete(file_path);
 writetable(T, file_path);
 
-%% passband specifications
-[pbSpec(1:4).fileSuffix]    = deal('Theta','Alpha','Beta','Gamma');
-[pbSpec(1:4).name]          = deal('theta','alpha','beta','gamma');
-[pbSpec(1:4).winLength]     = deal(5, 1, 1, 1);
 
+% option to define segment durations manually
+selection = false;
+while selection == false
+  cprintf([0,0.6,0], 'Do you want to use default segment durations?\n');
+  cprintf([0,0.6,0], '-------------------\n');
+  cprintf([0,0.6,0], 'theta:  5 sec\n');
+  cprintf([0,0.6,0], 'alpha:  1 sec\n');
+  cprintf([0,0.6,0], 'beta:   1 sec\n');
+  cprintf([0,0.6,0], 'gamma:  1 sec\n');
+  cprintf([0,0.6,0], '-------------------\n');
+  x = input('Select [y/n]: ','s');
+  if strcmp('y', x)
+    selection = true;
+    segmentation = true;
+  elseif strcmp('n', x)
+    selection = true;
+    segmentation= false;
+  else
+    selection = false;
+  end
+end
+fprintf('\n');
+
+
+%% segment duration specifications
+if segmentation == true
+    [pbSpec(1:4).winLength]     = deal(5, 1, 1, 1);
+else
+    segmentation = DEEP_segSelectbox();
+    [pbSpec(1:4).winLength]   = deal(segmentation{:});
+end
+
+    [pbSpec(1:4).fileSuffix]    = deal('Theta','Alpha','Beta','Gamma');
+    [pbSpec(1:4).name]          = deal('theta','alpha','beta','gamma');
+    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Segmentation, artifact rejection, PLV and mPLV estimation
 
@@ -120,7 +151,7 @@ for i = numOfPart
 
     fprintf(['<strong>Segmentation of Hilbert phase data at '...
               '%s (%g-%gHz).</strong>\n'], pbSpec(j).name, ...
-              data_hilbert.bpFreq);
+              data_hilbert.bpFreqMother);
     data_hilbert  = DEEP_segmentation( cfg, data_hilbert );
 
     % artifact rejection %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -133,12 +164,28 @@ for i = numOfPart
 
         fprintf(['<strong>Artifact Rejection of Hilbert phase data at '...
                   '%s (%g-%gHz).</strong>\n'], pbSpec(j).name, ...
-                  data_hilbert.bpFreq);
+                  data_hilbert.bpFreqMother);
         data_hilbert = DEEP_rejectArtifacts(cfg, data_hilbert);
         fprintf('\n');
       end
     end
-  
+    
+    % export the segmentations into a *.mat file
+    cfg             = [];
+    cfg.desFolder   = strcat(desPath, '07a_hilbertSegment/');
+    cfg.filename    = sprintf('coSMIC_d%02d_07a_hilbertSegment%s', i, ...
+                                pbSpec(j).fileSuffix);
+    cfg.sessionStr  = sessionStr;
+
+    file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
+                       '.mat');
+
+    fprintf('Saving Segmentations (%s: %g-%gHz) of dyad %d in:\n', ...
+             pbSpec(j).name, data_hilbert.bpFreqMother, i);
+    fprintf('%s ...\n', file_path);
+    DEEP_saveData(cfg, 'data_hilbert', data_hilbert);
+    fprintf('Data stored!\n');
+    
     % calculate PLV and meanPLV %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     cfg           = [];
     cfg.winlen    = pbSpec(j).winLength;                                    % window length for one PLV value in seconds
@@ -158,8 +205,8 @@ for i = numOfPart
 
     % export the PLVs into a *.mat file
     cfg             = [];
-    cfg.desFolder   = strcat(desPath, '07a_plv/');
-    cfg.filename    = sprintf('coSMIC_d%02d_07a_plv%s', i, ...
+    cfg.desFolder   = strcat(desPath, '07b_plv/');
+    cfg.filename    = sprintf('coSMIC_d%02d_07b_plv%s', i, ...
                                 pbSpec(j).fileSuffix);
     cfg.sessionStr  = sessionStr;
 
@@ -175,8 +222,8 @@ for i = numOfPart
 
     % export the mean PLVs into a *.mat file
     cfg             = [];
-    cfg.desFolder   = strcat(desPath, '07b_mplv/');
-    cfg.filename    = sprintf('coSMIC_d%02d_07b_mplv%s', i, ...
+    cfg.desFolder   = strcat(desPath, '07c_mplv/');
+    cfg.filename    = sprintf('coSMIC_d%02d_07c_mplv%s', i, ...
                                 pbSpec(j).fileSuffix);
     cfg.sessionStr  = sessionStr;
 

@@ -91,11 +91,14 @@ end
 if ~exist(strcat(desPath, '06b_hilbert'), 'dir')
   mkdir(strcat(desPath, '06b_hilbert'));
 end
-if ~exist(strcat(desPath, '07a_plv'), 'dir')
-  mkdir(strcat(desPath, '07a_plv'));
+if ~exist(strcat(desPath, '07a_hilbertSegment'), 'dir')
+  mkdir(strcat(desPath, '07a_hilbertSegment'));
 end
-if ~exist(strcat(desPath, '07b_mplv'), 'dir')
-  mkdir(strcat(desPath, '07b_mplv'));
+if ~exist(strcat(desPath, '07b_plv'), 'dir')
+  mkdir(strcat(desPath, '07b_plv'));
+end
+if ~exist(strcat(desPath, '07c_mplv'), 'dir')
+  mkdir(strcat(desPath, '07c_mplv'));
 end
 if ~exist(strcat(desPath, '08a_tfr'), 'dir')
   mkdir(strcat(desPath, '08a_tfr'));

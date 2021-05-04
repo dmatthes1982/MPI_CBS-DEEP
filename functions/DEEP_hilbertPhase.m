@@ -33,11 +33,11 @@ cfg.showcallinfo    = 'no';
 % Calculate Hilbert phase
 % -------------------------------------------------------------------------
 fprintf('<strong>Calc Hilbert phase of mothers data at %g Hz...</strong>\n', ...           
-         data.centerFreq);
+         data.centerFreqMother);
 data.mother   = hilbertTransform(cfg, data.mother);        
           
 fprintf('<strong>Calc Hilbert phase of childs data at %g Hz...</strong>\n', ...           
-         data.centerFreq);
+         data.centerFreqChild);
 data.child   = hilbertTransform(cfg, data.child);
 
 end

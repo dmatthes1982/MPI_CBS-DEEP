@@ -25,7 +25,7 @@ function [ data ] = DEEP_segmentation(cfg, data )
 segLength = ft_getopt(cfg, 'length', 1);
 overlap   = ft_getopt(cfg, 'overlap', 0);
 
-possibleLengths = [0.2, 1, 5, 10];
+possibleLengths = [0.2, 1, 2, 3, 4, 5, 6, 10];
 
 if ~any(ismember(possibleLengths, segLength))
   error('Excepted cfg.length values are only 0.2, 1, 5 and 10 seconds');
