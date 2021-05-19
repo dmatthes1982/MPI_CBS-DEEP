@@ -13,7 +13,7 @@ cprintf([0,0.6,0], '<strong>----------------------------------------------------
 % -------------------------------------------------------------------------
 % Path settings
 % -------------------------------------------------------------------------
-path = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';
+path = '/data/pt_01888/eegData/DualEEG_DEEP_processedData/';
 
 fprintf('\nThe default path is: %s\n', path);
 
@@ -44,7 +44,7 @@ clear newPaths
 % -------------------------------------------------------------------------
 tmpPath = strcat(path, '01a_raw/');
 
-fileList     = dir([tmpPath, 'coSMIC_d*_01a_raw_*.mat']);
+fileList     = dir([tmpPath, 'DEEP_d*_01a_raw_*.mat']);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);
 numOfFiles   = length(fileList);
@@ -137,13 +137,13 @@ for i = 1:1:length(parts)
   fprintf('\n%s\n', parts{i});
   tmpPath = strcat(path, folders{i}, '/');
   
-  fileList    = dir([tmpPath, ['coSMIC_d*' sessionStr '.mat']]);
+  fileList    = dir([tmpPath, ['DEEP_d*' sessionStr '.mat']]);
   fileList    = struct2cell(fileList);
   fileList    = fileList(1,:);
   numOfFiles  = length(fileList);
   numOfPart   = zeros(1, numOfFiles);
   for j = 1:1:numOfFiles
-    numOfPart(j) = sscanf(fileList{j}, strcat('coSMIC_d%d*', sessionStr, '.mat'));
+    numOfPart(j) = sscanf(fileList{j}, strcat('DEEP_d%d*', sessionStr, '.mat'));
   end
   
   numOfPart = unique(numOfPart);

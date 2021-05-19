@@ -40,8 +40,8 @@ plotevents  = ft_getopt(cfg, 'plotevents', 'yes');
 if isempty(dyad)                                                            % if dyad number is not specified
   event = [];                                                               % the associated markers cannot be loaded and displayed
 else                                                                        % else, load the stimulus markers 
-  source = '/data/pt_01888/eegData/DualEEG_coSMIC_rawData/';
-  filename = sprintf('coSMIC_all_P%02d.vhdr', dyad);
+  source = '/data/pt_01888/eegData/DualEEG_DEEP_rawData/';
+  filename = sprintf('DEEP_all_P%02d.vhdr', dyad);
   path = strcat(source, filename);
   event = ft_read_event(path);                                              % read stimulus markers
   

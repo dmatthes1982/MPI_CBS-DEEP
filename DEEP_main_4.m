@@ -2,12 +2,12 @@
 if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subFolder = '03b_eogchan/';
-  cfg.filename  = 'coSMIC_d01_03b_eogchan';
-  sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));             % estimate current session number
+  cfg.filename  = 'DEEP_d01_03b_eogchan';
+  sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));               % estimate current session number
 end
 
 if ~exist('desPath', 'var')
-  desPath = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';         % destination path for processed data  
+  desPath = '/data/pt_01888/eegData/DualEEG_DEEP_processedData/';           % destination path for processed data  
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in eogcomp data folder
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('coSMIC_d%d_03b_eogchan_', sessionStr, '.mat'));
+                    strcat('DEEP_d%d_03b_eogchan_', sessionStr, '.mat'));
   end
 end
 
@@ -42,7 +42,7 @@ fprintf('\n');
 fprintf('Determine available channels...\n');
 cfg             = [];
 cfg.srcFolder   = strcat(desPath, '02b_preproc1/');
-cfg.filename    = sprintf('coSMIC_d%02d_02b_preproc1', numOfPart(1));
+cfg.filename    = sprintf('DEEP_d%02d_02b_preproc1', numOfPart(1));
 cfg.sessionStr  = sessionStr;
 
 DEEP_loadData( cfg );
@@ -125,7 +125,7 @@ if ~(exist(settings_file, 'file') == 2)                                     % ch
   cfg.type        = 'settings';
   cfg.sessionStr  = sessionStr;
   
-  DEEP_createTbl(cfg);                                                    % create settings file
+  DEEP_createTbl(cfg);                                                      % create settings file
 end
 
 T = readtable(settings_file);                                               % update settings table
@@ -142,14 +142,14 @@ for i = numOfPart
 
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '03a_icacomp/');
-  cfg.filename    = sprintf('coSMIC_d%02d_03a_icacomp', i);
+  cfg.filename    = sprintf('DEEP_d%02d_03a_icacomp', i);
   cfg.sessionStr  = sessionStr;
   
   fprintf('Load ICA result...\n');
   DEEP_loadData( cfg );
   
   cfg.srcFolder   = strcat(desPath, '03b_eogchan/');
-  cfg.filename    = sprintf('coSMIC_d%02d_03b_eogchan', i);
+  cfg.filename    = sprintf('DEEP_d%02d_03b_eogchan', i);
   
   fprintf('Load original EOG channels...\n\n');
   DEEP_loadData( cfg );
@@ -178,7 +178,7 @@ for i = numOfPart
   % a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '04a_eogcomp/');
-  cfg.filename    = sprintf('coSMIC_d%02d_04a_eogcomp', i);
+  cfg.filename    = sprintf('DEEP_d%02d_04a_eogcomp', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -211,7 +211,7 @@ for i = numOfPart
   % load basic bandpass filtered data
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '02b_preproc1/');
-  cfg.filename    = sprintf('coSMIC_d%02d_02b_preproc1', i);
+  cfg.filename    = sprintf('DEEP_d%02d_02b_preproc1', i);
   cfg.sessionStr  = sessionStr;
   
   fprintf('Load bandpass filtered data...\n');
@@ -229,7 +229,7 @@ for i = numOfPart
   % export the reviced data in a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '04b_eyecor/');
-  cfg.filename    = sprintf('coSMIC_d%02d_04b_eyecor', i);
+  cfg.filename    = sprintf('DEEP_d%02d_04b_eyecor', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -245,7 +245,7 @@ for i = numOfPart
 
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '02a_badchan/');
-  cfg.filename    = sprintf('coSMIC_d%02d_02a_badchan', i);
+  cfg.filename    = sprintf('DEEP_d%02d_02a_badchan', i);
   cfg.sessionStr  = sessionStr;
 
   fprintf('Load bad channels specification...\n');
@@ -273,7 +273,7 @@ for i = numOfPart
   % export the bad channels in a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '04c_preproc2/');
-  cfg.filename    = sprintf('coSMIC_d%02d_04c_preproc2', i);
+  cfg.filename    = sprintf('DEEP_d%02d_04c_preproc2', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...

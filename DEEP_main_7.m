@@ -2,12 +2,12 @@
 if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subFolder = '06b_hilbert/';
-  cfg.filename  = 'coSMIC_d01_06b_hilbertGamma';
+  cfg.filename  = 'DEEP_d01_06b_hilbertGamma';
   sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));               % estimate current session number
 end
 
 if ~exist('desPath', 'var')
-  desPath = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';         % destination path for processed data  
+  desPath = '/data/pt_01888/eegData/DualEEG_DEEP_processedData/';           % destination path for processed data  
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in segmented data folder
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('coSMIC_d%d_06b_hilbertGamma_', sessionStr, '.mat'));
+                    strcat('DEEP_d%d_06b_hilbertGamma_', sessionStr, '.mat'));
   end
 end
 
@@ -115,7 +115,7 @@ for i = numOfPart
   if artifactRejection == true
     cfg             = [];
     cfg.srcFolder   = strcat(desPath, '05b_allart/');
-    cfg.filename    = sprintf('coSMIC_d%02d_05b_allart', i);
+    cfg.filename    = sprintf('DEEP_d%02d_05b_allart', i);
     cfg.sessionStr  = sessionStr;
   
     file_path = strcat(cfg.srcFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -137,7 +137,7 @@ for i = numOfPart
     cfg             = [];
     cfg.srcFolder   = strcat(desPath, '06b_hilbert/');
     cfg.sessionStr  = sessionStr;
-    cfg.filename    = sprintf('coSMIC_d%02d_06b_hilbert%s', i, ...
+    cfg.filename    = sprintf('DEEP_d%02d_06b_hilbert%s', i, ...
                                 pbSpec(j).fileSuffix);
     fprintf('Load hilbert phase data at %s...\n', pbSpec(j).name);
     DEEP_loadData( cfg );
@@ -171,7 +171,7 @@ for i = numOfPart
     % export the segmentations into a *.mat file
     cfg             = [];
     cfg.desFolder   = strcat(desPath, '07a_hilbertSegment/');
-    cfg.filename    = sprintf('coSMIC_d%02d_07a_hilbertSegment%s', i, ...
+    cfg.filename    = sprintf('DEEP_d%02d_07a_hilbertSegment%s', i, ...
                                 pbSpec(j).fileSuffix);
     cfg.sessionStr  = sessionStr;
 
@@ -204,7 +204,7 @@ for i = numOfPart
     % export the PLVs into a *.mat file
     cfg             = [];
     cfg.desFolder   = strcat(desPath, '07b_plv/');
-    cfg.filename    = sprintf('coSMIC_d%02d_07b_plv%s', i, ...
+    cfg.filename    = sprintf('DEEP_d%02d_07b_plv%s', i, ...
                                 pbSpec(j).fileSuffix);
     cfg.sessionStr  = sessionStr;
 
@@ -221,7 +221,7 @@ for i = numOfPart
     % export the mean PLVs into a *.mat file
     cfg             = [];
     cfg.desFolder   = strcat(desPath, '07c_mplv/');
-    cfg.filename    = sprintf('coSMIC_d%02d_07c_mplv%s', i, ...
+    cfg.filename    = sprintf('DEEP_d%02d_07c_mplv%s', i, ...
                                 pbSpec(j).fileSuffix);
     cfg.sessionStr  = sessionStr;
 

@@ -6,7 +6,7 @@ function [ data, cfg_manart ] = DEEP_importDataset(cfg)
 %   [ data, cfg_manart ] = DEEP_importDataset(cfg)
 %
 % The configuration options are
-%   cfg.path          = source path' (i.e. '/data/pt_01888/eegData/DualEEG_coSMIC_rawData/')
+%   cfg.path          = source path' (i.e. '/data/pt_01888/eegData/DualEEG_DEEP_rawData/')
 %   cfg.dyad          = number of dyad
 %   cfg.noichan       = channels which are not of interest (default: [])
 %   cfg.continuous    = 'yes' or 'no' (default: 'no')
@@ -45,7 +45,7 @@ if isempty(dyad)
   error('No specific participant is defined!');
 end
 
-headerfile = sprintf('%scoSMIC_all_P%02d.vhdr', path, dyad);
+headerfile = sprintf('%sDEEP_all_P%02d.vhdr', path, dyad);
 
 if strcmp(continuous, 'no')
   % -----------------------------------------------------------------------

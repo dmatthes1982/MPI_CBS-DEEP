@@ -2,7 +2,7 @@
 if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subFolder = '01a_raw/';
-  cfg.filename  = 'coSMIC_d01_01a_raw';
+  cfg.filename  = 'DEEP_d01_01a_raw';
   sessionNum    = DEEP_getSessionNum( cfg );
   if sessionNum == 0
     sessionNum = 1;
@@ -11,11 +11,11 @@ if ~exist('sessionStr', 'var')
 end
 
 if ~exist('srcPath', 'var')
-  srcPath = '/data/pt_01888/eegData/DualEEG_coSMIC_rawData/';               % source path to raw data
+  srcPath = '/data/pt_01888/eegData/DualEEG_DEEP_rawData/';                 % source path to raw data
 end
 
 if ~exist('desPath', 'var')
-  desPath = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';         % destination path for processed data  
+  desPath = '/data/pt_01888/eegData/DualEEG_DEEP_processedData/';           % destination path for processed data  
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in raw data folder
@@ -26,7 +26,7 @@ if ~exist('numOfPart', 'var')                                               % es
   numOfPart     = zeros(1, numOfSources);
 
   for i=1:1:numOfSources
-    numOfPart(i)  = sscanf(sourceList{i}, 'coSMIC_all_P%d.vhdr');
+    numOfPart(i)  = sscanf(sourceList{i}, 'DEEP_all_P%d.vhdr');
   end
 end
 
@@ -92,7 +92,7 @@ if ~(exist(settings_file, 'file') == 2)                                     % ch
   cfg.type        = 'settings';
   cfg.sessionStr  = sessionStr;
 
-  DEEP_createTbl(cfg);                                                       % create settings file
+  DEEP_createTbl(cfg);                                                      % create settings file
 end
 
 % Load settings file
@@ -119,7 +119,7 @@ for i = numOfPart
 
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '01a_raw/');
-  cfg.filename    = sprintf('coSMIC_d%02d_01a_raw', i);
+  cfg.filename    = sprintf('DEEP_d%02d_01a_raw', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -133,7 +133,7 @@ for i = numOfPart
   
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '01b_manart/');
-  cfg.filename    = sprintf('coSMIC_d%02d_01b_manart', i);
+  cfg.filename    = sprintf('DEEP_d%02d_01b_manart', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...

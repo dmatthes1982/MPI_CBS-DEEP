@@ -13,7 +13,7 @@ cprintf([0,0.6,0], '<strong>----------------------------------------------------
 % -------------------------------------------------------------------------
 % Path settings
 % -------------------------------------------------------------------------
-path = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';
+path = '/data/pt_01888/eegData/DualEEG_DEEP_processedData/';
 
 fprintf('\nThe default path is: %s\n', path);
 
@@ -42,7 +42,7 @@ end
 % -------------------------------------------------------------------------
 tmpPath = strcat(path, '05a_autoart/');
 
-fileList     = dir([tmpPath, 'coSMIC_d*_05a_autoart_*.mat']);
+fileList     = dir([tmpPath, 'DEEP_d*_05a_autoart_*.mat']);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);
 numOfFiles   = length(fileList);
@@ -102,13 +102,13 @@ clear sessionNum fileListCopy y userList match filePath cmdout attrib
 % -------------------------------------------------------------------------
 tmpPath = strcat(path, '05a_autoart/');
 
-fileList     = dir([tmpPath, ['coSMIC_d*_05a_autoart_' sessionStr '.mat']]);
+fileList     = dir([tmpPath, ['DEEP_d*_05a_autoart_' sessionStr '.mat']]);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);
 numOfFiles  = length(fileList);
 numOfPart   = zeros(1, numOfFiles);
 for i = 1:1:numOfFiles
-  numOfPart(i) = sscanf(fileList{i}, strcat('coSMIC_d%d*', sessionStr, '.mat'));
+  numOfPart(i) = sscanf(fileList{i}, strcat('DEEP_d%d*', sessionStr, '.mat'));
 end
 
 file_path = strcat(tmpPath, fileList{1});

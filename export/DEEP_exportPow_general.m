@@ -44,10 +44,10 @@ clear newPaths
 % Session selection
 % -------------------------------------------------------------------------
 fprintf('\n<strong>Session selection...</strong>\n');
-srcPath = [path 'DualEEG_coSMIC_processedData/'];
+srcPath = [path 'DualEEG_DEEP_processedData/'];
 srcPath = [srcPath  '08b_pwelch/'];
 
-fileList     = dir([srcPath, 'coSMIC_d*_08b_pwelch_*.mat']);                % determine all avaible sessions
+fileList     = dir([srcPath, 'DEEP_d*_08b_pwelch_*.mat']);                  % determine all avaible sessions
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);
 numOfFiles   = length(fileList);
@@ -107,7 +107,7 @@ clear sessionNum fileListCopy y userList match filePath cmdout attrib ...
 % Dyad selection
 % -------------------------------------------------------------------------
 fprintf('<strong>Dyad selection...</strong>\n');
-fileList     = dir([srcPath 'coSMIC_d*_08b_pwelch_' sessionStr '.mat']);
+fileList     = dir([srcPath 'DEEP_d*_08b_pwelch_' sessionStr '.mat']);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);                                               % generate list with filenames of all existing dyads
 numOfFiles   = length(fileList);
@@ -115,7 +115,7 @@ numOfFiles   = length(fileList);
 listOfPart = zeros(numOfFiles, 1);
 
 for i = 1:1:numOfFiles
-  listOfPart(i) = sscanf(fileList{i}, ['coSMIC_d%d_08b_pwelch_' ...         % generate a list of all available numbers of dyads
+  listOfPart(i) = sscanf(fileList{i}, ['DEEP_d%d_08b_pwelch_' ...           % generate a list of all available numbers of dyads
                                         sessionStr '.mat']);
 end
 
@@ -145,7 +145,7 @@ clear listOfPart listOfPartStr listOfPartBool i
 % -------------------------------------------------------------------------
 fprintf('<strong>Conditions selection...</strong>\n');
 filepath = fileparts(mfilename('fullpath'));
-load(sprintf('%s/../general/DEEP_generalDefinitions.mat', filepath), ...  % load general definitions
+load(sprintf('%s/../general/DEEP_generalDefinitions.mat', filepath), ...    % load general definitions
      'generalDefinitions');
 
 condMark  = generalDefinitions.condMark(1, :);                              % extract condition identifiers
@@ -258,14 +258,14 @@ clear data_pwelch numOfChan part selection x prompt_string
 % Generate xls file
 % -------------------------------------------------------------------------
 fprintf('<strong>Identifier specification...</strong>\n');
-desPath = [path 'DualEEG_coSMIC_results/Power_export/general/' ...          % destination path
+desPath = [path 'DualEEG_DEEP_results/Power_export/general/' ...            % destination path
           sessionStr '/'];
 
 if ~exist(desPath, 'dir')                                                   % generate session dir, if not exist
   mkdir(desPath);
 end
 
-template_file = [path 'DualEEG_coSMIC_templates/' ...                       % template file
+template_file = [path 'DualEEG_DEEP_templates/' ...                         % template file
                   'general/Export_template.xls'];
 
 selection = false;

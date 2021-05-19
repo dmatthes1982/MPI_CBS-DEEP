@@ -2,12 +2,12 @@
 if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subfolder = '04c_preproc2';
-  cfg.filename  = 'coSMIC_d01_04c_preproc2';
-  sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));             % estimate current session number
+  cfg.filename  = 'DEEP_d01_04c_preproc2';
+  sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));               % estimate current session number
 end
 
 if ~exist('desPath', 'var')
-  desPath = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';         % destination path for processed data  
+  desPath = '/data/pt_01888/eegData/DualEEG_DEEP_processedData/';           % destination path for processed data  
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in eyecor data folder
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('coSMIC_d%d_04c_preproc2_', sessionStr, '.mat'));
+                    strcat('DEEP_d%d_04c_preproc2_', sessionStr, '.mat'));
   end
 end
 
@@ -56,7 +56,7 @@ if tfr == true
     cfg             = [];                                                   % load EOG-artifact corrected data
     cfg.srcFolder   = strcat(desPath, '04c_preproc2/');
     cfg.sessionStr  = sessionStr;
-    cfg.filename    = sprintf('coSMIC_d%02d_04c_preproc2', i);
+    cfg.filename    = sprintf('DEEP_d%02d_04c_preproc2', i);
 
     fprintf('Load preprocessed data...\n\n');
     DEEP_loadData( cfg );
@@ -74,7 +74,7 @@ if tfr == true
     % export TFR data into a *.mat file
     cfg             = [];
     cfg.desFolder   = strcat(desPath, '08a_tfr/');
-    cfg.filename    = sprintf('coSMIC_d%02d_08a_tfr', i);
+    cfg.filename    = sprintf('DEEP_d%02d_08a_tfr', i);
     cfg.sessionStr  = sessionStr;
 
     file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -131,7 +131,7 @@ if pwelch == true
     cfg.type        = 'settings';
     cfg.sessionStr  = sessionStr;
   
-    DEEP_createTbl(cfg);                                                  % create settings file
+    DEEP_createTbl(cfg);                                                    % create settings file
   end
 
   T = readtable(file_path);                                                 % update settings table
@@ -147,7 +147,7 @@ if pwelch == true
     % Load preprocessed data
     cfg             = [];
     cfg.srcFolder   = strcat(desPath, '04c_preproc2/');
-    cfg.filename    = sprintf('coSMIC_d%02d_04c_preproc2', i);
+    cfg.filename    = sprintf('DEEP_d%02d_04c_preproc2', i);
     cfg.sessionStr  = sessionStr;
 
     fprintf('Load preprocessed data...\n\n');
@@ -162,7 +162,7 @@ if pwelch == true
     fprintf('<strong>Segmentation of preprocessed data.</strong>\n');
     data_preproc2 = DEEP_segmentation( cfg, data_preproc2 );
 
-    numOfAllSeg = DEEP_numOfSeg( data_preproc2 );                         % estimate number of segments for each existing condition and participant
+    numOfAllSeg = DEEP_numOfSeg( data_preproc2 );                           % estimate number of segments for each existing condition and participant
 
     fprintf('\n');
     
@@ -170,7 +170,7 @@ if pwelch == true
     if artifactRejection == true
       cfg             = [];
       cfg.srcFolder   = strcat(desPath, '05b_allart/');
-      cfg.filename    = sprintf('coSMIC_d%02d_05b_allart', i);
+      cfg.filename    = sprintf('DEEP_d%02d_05b_allart', i);
       cfg.sessionStr  = sessionStr;
 
       file_path = strcat(cfg.srcFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -203,13 +203,13 @@ if pwelch == true
       clear cfg_allart
     end
 
-    numOfGoodSeg = DEEP_numOfSeg( data_preproc2 );                        % estimate number of remaining segments (after artifact rejection) for each existing condition and participant
+    numOfGoodSeg = DEEP_numOfSeg( data_preproc2 );                          % estimate number of remaining segments (after artifact rejection) for each existing condition and participant
 
     % Estimation of power spectrum
     cfg         = [];
     cfg.foi     = 1:1:50;                                                   % frequency of interest
       
-    data_preproc2 = DEEP_pWelch( cfg, data_preproc2 );                    % calculate power activity using Welch's method
+    data_preproc2 = DEEP_pWelch( cfg, data_preproc2 );                      % calculate power activity using Welch's method
     data_pwelch = data_preproc2;                                            % to save need of RAM
     data_pwelch.mother.numOfAllSeg  = numOfAllSeg.mother;                   % add number of segments of each existing condition
     data_pwelch.child.numOfAllSeg   = numOfAllSeg.child;
@@ -220,7 +220,7 @@ if pwelch == true
     % export power spectrum into a *.mat file
     cfg             = [];
     cfg.desFolder   = strcat(desPath, '08b_pwelch/');
-    cfg.filename    = sprintf('coSMIC_d%02d_08b_pwelch', i);
+    cfg.filename    = sprintf('DEEP_d%02d_08b_pwelch', i);
     cfg.sessionStr  = sessionStr;
 
     file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...

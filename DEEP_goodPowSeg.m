@@ -14,7 +14,7 @@ cprintf([0,0.6,0], '<strong>----------------------------------------------------
 % -------------------------------------------------------------------------
 % Path settings
 % -------------------------------------------------------------------------
-path = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';
+path = '/data/pt_01888/eegData/DualEEG_DEEP_processedData/';
 
 fprintf('\nThe default path is: %s\n', path);
 
@@ -43,7 +43,7 @@ end
 % -------------------------------------------------------------------------
 tmpPath = strcat(path, '08b_pwelch/');
 
-fileList     = dir([tmpPath, 'coSMIC_d*_08b_pwelch_*.mat']);
+fileList     = dir([tmpPath, 'DEEP_d*_08b_pwelch_*.mat']);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);
 numOfFiles   = length(fileList);
@@ -114,13 +114,13 @@ clear filepath generalDefinitions
 % -------------------------------------------------------------------------
 tmpPath = strcat(path, '08b_pwelch/');
 
-fileList     = dir([tmpPath, ['coSMIC_d*_08b_pwelch_' sessionStr '.mat']]);
+fileList     = dir([tmpPath, ['DEEP_d*_08b_pwelch_' sessionStr '.mat']]);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);
 numOfFiles  = length(fileList);
 numOfPart   = zeros(1, numOfFiles);
 for i = 1:1:numOfFiles
-  numOfPart(i) = sscanf(fileList{i}, strcat('coSMIC_d%d*', sessionStr, '.mat'));
+  numOfPart(i) = sscanf(fileList{i}, strcat('DEEP_d%d*', sessionStr, '.mat'));
 end
 
 rows = num2cell(numOfPart);
@@ -140,7 +140,7 @@ headline = cellfun(@(x) sprintf('S%d', x), num2cell(conditions)', ...
 cell_array = [rows, num2cell(zeros(numel(rows), numel(conditions)))];
 
 T = cell2table(cell_array);
-T.Properties.VariableNames = [{'participants'}, headline];                      % create empty table with variable names
+T.Properties.VariableNames = [{'participants'}, headline];                  % create empty table with variable names
 
 clear headline rows_part1 rows_part2 rows_part3 cell_array conditions ...
       rows

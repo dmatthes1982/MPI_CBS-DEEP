@@ -6,7 +6,7 @@ function  [ data_pwelchod ] = DEEP_powOverDyads( cfg )
 %   [ data_pwelchod ] = DEEP_powOverDyads( cfg )
 %
 % The configuration options are
-%   cfg.path      = source path' (i.e. '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/08b_pwelch/')
+%   cfg.path      = source path' (i.e. '/data/pt_01888/eegData/DualEEG_DEEP_processedData/08b_pwelch/')
 %   cfg.session   = session number (default: 1)
 %
 % This function requires the fieldtrip toolbox
@@ -19,7 +19,7 @@ function  [ data_pwelchod ] = DEEP_powOverDyads( cfg )
 % Get and check config options
 % -------------------------------------------------------------------------
 path      = ft_getopt(cfg, 'path', ...
-              '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/08b_pwelch/');
+              '/data/pt_01888/eegData/DualEEG_DEEP_processedData/08b_pwelch/');
 session   = ft_getopt(cfg, 'session', 1);
 
 % -------------------------------------------------------------------------
@@ -34,13 +34,13 @@ load(sprintf('%s/../general/DEEP_generalDefinitions.mat', filepath), ...
 % -------------------------------------------------------------------------    
 fprintf('<strong>Averaging power values over dyads...</strong>\n');
 
-dyadsList   = dir([path, sprintf('coSMIC_d*_08b_pwelch_%03d.mat', session)]);
+dyadsList   = dir([path, sprintf('DEEP_d*_08b_pwelch_%03d.mat', session)]);
 dyadsList   = struct2cell(dyadsList);
 dyadsList   = dyadsList(1,:);
 numOfDyads  = length(dyadsList);
 
 for i=1:1:numOfDyads
-  listOfDyads(i) = sscanf(dyadsList{i}, ['coSMIC_d%d_08b'...
+  listOfDyads(i) = sscanf(dyadsList{i}, ['DEEP_d%d_08b'...
                                    sprintf('%03d.mat', session)]);          %#ok<AGROW>
 end
 
@@ -72,7 +72,7 @@ trialinfoExp{1, numOfDyads}   = [];
 trialinfoChild{1, numOfDyads} = [];
 
 for i=1:1:numOfDyads
-  filename = sprintf('coSMIC_d%02d_08b_pwelch_%03d.mat', listOfDyads(i), ...
+  filename = sprintf('DEEP_d%02d_08b_pwelch_%03d.mat', listOfDyads(i), ...
                      session);
   file = strcat(path, filename);
   fprintf('Load %s ...\n', filename);

@@ -10,7 +10,7 @@ function [ cfgAllArt ] = DEEP_manArtifact( cfg, data )
 %
 % The configuration options are
 %   cfg.artifact  = output of DEEP_AUTOARTIFACT and/or DEEP_IMPORTDATASET
-%                   (see files coSMIC_dxx_05a_autoart_yyy.mat, coSMIC_dxx_01b_manart_yyy.mat)
+%                   (see files DEEP_dxx_05a_autoart_yyy.mat, DEEP_dxx_01b_manart_yyy.mat)
 %   cfg.dyad      = number of dyad (only necessary for adding markers to databrowser view) (default: []) 
 %
 % This function requires the fieldtrip toolbox.

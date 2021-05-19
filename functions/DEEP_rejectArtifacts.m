@@ -11,7 +11,7 @@ function [ data ] = DEEP_rejectArtifacts( cfg, data )
 % The configuration options are
 %   cfg.part      = participants which shall be processed: mother, child or both (default: both)
 %   cfg.artifact  = output of DEEP_MANARTIFACT or DEEP_AUTOARTIFACT 
-%                   (see file coSMIC_pxx_05_autoArt_yyy.mat, coSMIC_pxx_06_allArt_yyy.mat)
+%                   (see file DEEP_pxx_05_autoArt_yyy.mat, DEEP_pxx_06_allArt_yyy.mat)
 %   cfg.reject    = 'none', 'partial','nan', or 'complete' (default = 'complete')
 %   cfg.target    = type of rejection, options: 'single' or 'dual' (default: 'single');
 %                   'single' = trials of a certain participant will be 

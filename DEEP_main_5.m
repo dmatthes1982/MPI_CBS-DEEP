@@ -2,12 +2,12 @@
 if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subFolder = '04c_preproc2/';
-  cfg.filename  = 'coSMIC_d01_04c_preproc2';
-  sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));             % estimate current session number
+  cfg.filename  = 'DEEP_d01_04c_preproc2';
+  sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));               % estimate current session number
 end
 
 if ~exist('desPath', 'var')
-  desPath = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';         % destination path for processed data  
+  desPath = '/data/pt_01888/eegData/DualEEG_DEEP_processedData/';           % destination path for processed data  
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in eyecor data folder
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('coSMIC_d%d_04c_preproc2_', sessionStr, '.mat'));
+                    strcat('DEEP_d%d_04c_preproc2_', sessionStr, '.mat'));
   end
 end
 
@@ -180,7 +180,7 @@ if isempty(selChanMother) && isempty(selChanChild)
   cprintf([0,0.6,0], '\nAvailable channels will be determined. Please wait...\n');
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '04c_preproc2/');
-  cfg.filename    = sprintf('coSMIC_d%02d_04c_preproc2', numOfPart(1));
+  cfg.filename    = sprintf('DEEP_d%02d_04c_preproc2', numOfPart(1));
   cfg.sessionStr  = sessionStr;
 
   DEEP_loadData( cfg );
@@ -256,7 +256,7 @@ writetable(T, file_path);
 for i = numOfPart
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '04c_preproc2/');
-  cfg.filename    = sprintf('coSMIC_d%02d_04c_preproc2', i);
+  cfg.filename    = sprintf('DEEP_d%02d_04c_preproc2', i);
   cfg.sessionStr  = sessionStr;
   
   fprintf('<strong>Dyad %d</strong>\n', i);
@@ -266,7 +266,7 @@ for i = numOfPart
   if strcmp(deadSegs, 'y')
     cfg             = [];
     cfg.srcFolder   = strcat(desPath, '01a_raw/');
-    cfg.filename    = sprintf('coSMIC_d%02d_01a_raw', i);
+    cfg.filename    = sprintf('DEEP_d%02d_01a_raw', i);
     cfg.sessionStr  = sessionStr;
 
     fprintf('Load raw data...\n');
@@ -274,7 +274,7 @@ for i = numOfPart
     
     cfg             = [];
     cfg.srcFolder   = strcat(desPath, '02a_badchan/');
-    cfg.filename    = sprintf('coSMIC_d%02d_02a_badchan', i);
+    cfg.filename    = sprintf('DEEP_d%02d_02a_badchan', i);
     cfg.sessionStr  = sessionStr;
 
     fprintf('Load bad channels specification...\n\n');
@@ -285,7 +285,7 @@ for i = numOfPart
 
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '01b_manart/');
-  cfg.filename    = sprintf('coSMIC_d%02d_01b_manart', i);
+  cfg.filename    = sprintf('DEEP_d%02d_01b_manart', i);
   cfg.sessionStr  = sessionStr;
 
   fprintf('Load manual, during the testing defined artifacts...\n');
@@ -321,7 +321,7 @@ for i = numOfPart
   if importArt == true
     cfg             = [];
     cfg.srcFolder   = strcat(desPath, '05b_allart/');
-    cfg.filename    = sprintf('coSMIC_d%02d_05b_allart', i);
+    cfg.filename    = sprintf('DEEP_d%02d_05b_allart', i);
     cfg.sessionStr  = sessionStr;
 
     filename = strcat(cfg.srcFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -356,7 +356,7 @@ for i = numOfPart
 
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '05a_autoart/');
-  cfg.filename    = sprintf('coSMIC_d%02d_05a_autoart', i);
+  cfg.filename    = sprintf('DEEP_d%02d_05a_autoart', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -371,7 +371,7 @@ for i = numOfPart
   % export the verified and the additional artifacts into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '05b_allart/');
-  cfg.filename    = sprintf('coSMIC_d%02d_05b_allart', i);
+  cfg.filename    = sprintf('DEEP_d%02d_05b_allart', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...

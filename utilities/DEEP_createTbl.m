@@ -7,7 +7,7 @@ function DEEP_createTbl( cfg )
 %   DEEP_createTbl( cfg )
 %
 % The configuration options are
-%   cfg.desFolder   = destination folder (default: '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/00_settings/')
+%   cfg.desFolder   = destination folder (default: '/data/pt_01888/eegData/DualEEG_DEEP_processedData/00_settings/')
 %   cfg.type        = type of documentation file (options: 'settings', 'plv')
 %   cfg.param       = additional params for type 'plv' (options: 'theta', 'alpha', 'beta', 'gamma');
 %   cfg.sessionStr  = number of session, format: %03d, i.e.: '003' (default: '001')
@@ -24,7 +24,7 @@ function DEEP_createTbl( cfg )
 % Get config options
 % -------------------------------------------------------------------------
 desFolder   = ft_getopt(cfg, 'desFolder', ...
-          '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/00_settings/');
+          '/data/pt_01888/eegData/DualEEG_DEEP_processedData/00_settings/');
 type        = ft_getopt(cfg, 'type', []);
 param       = ft_getopt(cfg, 'param', []);
 sessionStr  = ft_getopt(cfg, 'sessionStr', []);

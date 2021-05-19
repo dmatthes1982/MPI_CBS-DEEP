@@ -6,7 +6,7 @@ function [ data_mplvod ] = DEEP_mPLVoverDyads( cfg )
 %   [ data_mplvod ] = DEEP_mPLVoverDyads( cfg )
 %
 % The configuration options are
-%   cfg.path      = source path' (i.e. '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/07b_mplv/')
+%   cfg.path      = source path' (i.e. '/data/pt_01888/eegData/DualEEG_DEEP_processedData/07c_mplv/')
 %   cfg.session   = session number (default: 1)
 %   cfg.passband  = select passband of interest (default: theta)
 %                   (accepted values: theta, alpha, beta, gamma)
@@ -21,7 +21,7 @@ function [ data_mplvod ] = DEEP_mPLVoverDyads( cfg )
 % Get and check config options
 % -------------------------------------------------------------------------
 path      = ft_getopt(cfg, 'path', ...
-              '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/07b_mplv/');
+              '/data/pt_01888/eegData/DualEEG_DEEP_processedData/07c_mplv/');
 session   = ft_getopt(cfg, 'session', 1);
 passband  = ft_getopt(cfg, 'passband', 'theta');
 
@@ -47,14 +47,14 @@ load(sprintf('%s/../general/DEEP_generalDefinitions.mat', filepath), ...
 % -------------------------------------------------------------------------    
 fprintf('<strong>Averaging of Phase Locking Values over dyads at %s...</strong>\n', passband);
 
-dyadsList   = dir([path, sprintf('coSMIC_d*_07c_mplv%s_%03d.mat', ...
+dyadsList   = dir([path, sprintf('DEEP_d*_07c_mplv%s_%03d.mat', ...
                    fileSuffix, session)]);
 dyadsList   = struct2cell(dyadsList);
 dyadsList   = dyadsList(1,:);
 numOfDyads  = length(dyadsList);
 
 for i=1:1:numOfDyads
-  listOfDyads(i) = sscanf(dyadsList{i}, ['coSMIC_d%d_07c'...
+  listOfDyads(i) = sscanf(dyadsList{i}, ['DEEP_d%d_07c_mplv'...
                                    sprintf('%s_', fileSuffix) ...
                                    sprintf('%03d.mat', session)]);          %#ok<AGROW>
 end
@@ -84,7 +84,7 @@ data{1, numOfDyads} = [];
 trialinfo{1, numOfDyads} = [];
 
 for i=1:1:numOfDyads
-  filename = sprintf('coSMIC_d%02d_07b_mplv%s_%03d.mat', listOfDyads(i), ...
+  filename = sprintf('DEEP_d%02d_07c_mplv%s_%03d.mat', listOfDyads(i), ...
                     fileSuffix, session);
   file = strcat(path, filename);
   fprintf('Load %s ...\n', filename);
@@ -92,9 +92,11 @@ for i=1:1:numOfDyads
   data{i} = data_mplv.dyad.mPLV;
   trialinfo{i} = data_mplv.dyad.trialinfo;
   if i == 1
-    data_mplvod.centerFreq    = data_mplv.centerFreq;
-    data_mplvod.bpFreq        = data_mplv.bpFreq;
-    data_mplvod.avgData.label = data_mplv.dyad.label;
+    data_mplvod.centerFreqMother    = data_mplv.centerFreqMother;
+    data_mplvod.bpFreqMother        = data_mplv.bpFreqMother;
+    data_mplvod.centerFreqChild     = data_mplv.centerFreqChild;
+    data_mplvod.bpFreqChild         = data_mplv.bpFreqChild;
+    data_mplvod.avgData.label       = data_mplv.dyad.label;
   end
   clear data_mplv
 end

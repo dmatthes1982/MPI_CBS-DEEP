@@ -44,10 +44,10 @@ clear newPaths
 % Session selection
 % -------------------------------------------------------------------------
 fprintf('\n<strong>Session selection...</strong>\n');
-srcPath = [path 'DualEEG_coSMIC_processedData/'];
+srcPath = [path 'DualEEG_DEEP_processedData/'];
 srcPath = [srcPath  '07b_mplv/'];
 
-fileList     = dir([srcPath, 'coSMIC_d*_07b_mplvTheta_*.mat']);
+fileList     = dir([srcPath, 'DEEP_d*_07b_mplvTheta_*.mat']);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);
 numOfFiles   = length(fileList);
@@ -121,7 +121,7 @@ fprintf('You have selected the following passband: %s\n\n', passband);
 % Dyad selection
 % -------------------------------------------------------------------------
 fprintf('<strong>Dyad selection...</strong>\n');
-fileList     = dir([srcPath 'coSMIC_d*_07b_mplv' passband '_' sessionStr...
+fileList     = dir([srcPath 'DEEP_d*_07b_mplv' passband '_' sessionStr...
                     '.mat']);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);                                               % generate list with filenames of all existing dyads
@@ -130,7 +130,7 @@ numOfFiles   = length(fileList);
 listOfPart = zeros(numOfFiles, 1);
 
 for i = 1:1:numOfFiles
-  listOfPart(i) = sscanf(fileList{i}, ['coSMIC_d%d_07b_mplv' passband ...   % generate a list of all available numbers of dyads
+  listOfPart(i) = sscanf(fileList{i}, ['DEEP_d%d_07b_mplv' passband ...   % generate a list of all available numbers of dyads
                                         '_' sessionStr '.mat']);
 end
 
@@ -246,14 +246,14 @@ clear data_mplv numOfChan connMatrix row col part i label_x label_y ...
 % Generate xls file
 % -------------------------------------------------------------------------
 fprintf('<strong>Identifier specification...</strong>\n');
-desPath = [path 'DualEEG_coSMIC_results/PLV_export/general/' sessionStr ... % destination path
+desPath = [path 'DualEEG_DEEP_results/PLV_export/general/' sessionStr ...   % destination path
           '/'];
 
 if ~exist(desPath, 'dir')                                                   % generate session dir, if not exist
   mkdir(desPath);
 end
 
-template_file = [path 'DualEEG_coSMIC_templates/' ...                       % template file
+template_file = [path 'DualEEG_DEEP_templates/' ...                         % template file
                   'general/Export_template.xls'];
 
 selection = false;

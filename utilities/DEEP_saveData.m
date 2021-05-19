@@ -7,7 +7,7 @@ function DEEP_saveData( cfg, varargin )
 %
 % The configuration options are
 %   cfg.desFolder   = destination folder (default: '/data/pt_01888/eegData/DualEEG_DEEP_processedData/01_raw/')
-%   cfg.filename    = filename (default: 'coSMIC_d01_01_raw')
+%   cfg.filename    = filename (default: 'DEEP_d01_01_raw')
 %   cfg.sessionStr  = number of session, format: %03d, i.e.: '003' (default: '001')
 %
 % This function requires the fieldtrip toolbox.
@@ -19,8 +19,8 @@ function DEEP_saveData( cfg, varargin )
 % -------------------------------------------------------------------------
 % Get config options
 % -------------------------------------------------------------------------
-desFolder   = ft_getopt(cfg, 'desFolder', '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/01_raw/');
-filename    = ft_getopt(cfg, 'filename', 'coSMIC_d01_01_raw');
+desFolder   = ft_getopt(cfg, 'desFolder', '/data/pt_01888/eegData/DualEEG_DEEP_processedData/01_raw/');
+filename    = ft_getopt(cfg, 'filename', 'DEEP_d01_01_raw');
 sessionStr  = ft_getopt(cfg, 'sessionStr', '001');
 
 % -------------------------------------------------------------------------

@@ -58,10 +58,10 @@ clear newPaths
 % Session selection
 % -------------------------------------------------------------------------
 fprintf('\n<strong>Session selection...</strong>\n');
-srcPath = [datastorepath 'DualEEG_coSMIC_processedData/'];
+srcPath = [datastorepath 'DualEEG_DEEP_processedData/'];
 srcPath = [srcPath  '07b_mplv/'];
 
-fileList     = dir([srcPath, 'coSMIC_d*_07b_mplvTheta_*.mat']);
+fileList     = dir([srcPath, 'DEEP_d*_07b_mplvTheta_*.mat']);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);
 numOfFiles   = length(fileList);
@@ -135,7 +135,7 @@ fprintf('You have selected the following passband: %s\n\n', passband);
 % Dyad selection
 % -------------------------------------------------------------------------
 fprintf('<strong>Dyad selection...</strong>\n');
-fileList     = dir([srcPath 'coSMIC_d*_07b_mplv' passband '_' sessionStr ...
+fileList     = dir([srcPath 'DEEP_d*_07b_mplv' passband '_' sessionStr ...
                     '.mat']);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);                                               % generate list with filenames of all existing dyads
@@ -144,7 +144,7 @@ numOfFiles   = length(fileList);
 listOfPart = zeros(numOfFiles, 1);
 
 for i = 1:1:numOfFiles
-  listOfPart(i) = sscanf(fileList{i}, ['coSMIC_d%d_07b_mplv' passband ...   % generate a list of all available numbers of dyads
+  listOfPart(i) = sscanf(fileList{i}, ['DEEP_d%d_07b_mplv' passband ...     % generate a list of all available numbers of dyads
                                         '_' sessionStr '.mat']);
 end
 
@@ -174,7 +174,7 @@ clear listOfPart listOfPartStr listOfPartBool i
 % -------------------------------------------------------------------------
 fprintf('<strong>Conditions selection...</strong>\n');
 filepath = fileparts(mfilename('fullpath'));
-load(sprintf('%s/../general/DEEP_generalDefinitions.mat', filepath), ...  % load general definitions
+load(sprintf('%s/../general/DEEP_generalDefinitions.mat', filepath), ...    % load general definitions
      'generalDefinitions');
 
 condMark  = generalDefinitions.condMarkDual;                                % extract condition identifiers
@@ -411,7 +411,7 @@ end
 % -------------------------------------------------------------------------
 fprintf('<strong>Save data...</strong>\n');
 
-desPath = [datastorepath 'DualEEG_coSMIC_results/PLV_stats/' ...            % destination path
+desPath = [datastorepath 'DualEEG_DEEP_results/PLV_stats/' ...              % destination path
             sessionStr '/'];
 if ~exist(desPath, 'dir')                                                   % generate session dir, if not exist
   mkdir(desPath);
@@ -425,7 +425,7 @@ while selection == false
     cprintf([1,0.5,0], ['Use only letters and or numbers for the file '...
                         'identifier\n']);
   else
-    matFile = [desPath 'coSMIC_mplvStats_' identifier{1} '_' sessionStr ... % build filename
+    matFile = [desPath 'DEEP_mplvStats_' identifier{1} '_' sessionStr ...   % build filename
                 '.mat'];
 
     if exist(matFile, 'file')                                               % check if file already exists

@@ -19,8 +19,8 @@ cprintf([0,0.6,0], '<strong>----------------------------------------------------
 % -------------------------------------------------------------------------
 % Path settings
 % -------------------------------------------------------------------------
-srcPath = '/data/pt_01888/eegData/DualEEG_coSMIC_rawData/';
-desPath = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';
+srcPath = '/data/pt_01888/eegData/DualEEG_DEEP_rawData/';
+desPath = '/data/pt_01888/eegData/DualEEG_DEEP_processedData/';
 
 fprintf('\nThe default paths are:\n');
 fprintf('Source: %s\n',srcPath);
@@ -125,7 +125,7 @@ selection = false;
 
 tmpPath = strcat(desPath, '01a_raw/');
 
-sessionList     = dir([tmpPath, 'coSMIC_d*_01a_raw_*.mat']);
+sessionList     = dir([tmpPath, 'DEEP_d*_01a_raw_*.mat']);
 sessionList     = struct2cell(sessionList);
 sessionList     = sessionList(1,:);
 numOfSessions   = length(sessionList);
@@ -294,49 +294,49 @@ numOfSources  = length(sourceList);
 fileNum       = zeros(1, numOfSources);
 
 for i=1:1:numOfSources
-  fileNum(i)     = sscanf(sourceList{i}, 'coSMIC_all_P%d.vhdr');
+  fileNum(i)     = sscanf(sourceList{i}, 'DEEP_all_P%d.vhdr');
 end
 
 switch part
   case 1
     fileNamePre = [];
     tmpPath = strcat(desPath, '01a_raw/');
-    fileNamePost = strcat(tmpPath, 'coSMIC_d*_01a_raw_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'DEEP_d*_01a_raw_', sessionStr, '.mat');
   case 2
     tmpPath = strcat(desPath, '01a_raw/');
-    fileNamePre = strcat(tmpPath, 'coSMIC_d*_01a_raw_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'DEEP_d*_01a_raw_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '02b_preproc1/');
-    fileNamePost = strcat(tmpPath, 'coSMIC_d*_02b_preproc1_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'DEEP_d*_02b_preproc1_', sessionStr, '.mat');
   case 3
     tmpPath = strcat(desPath, '02b_preproc1/');
-    fileNamePre = strcat(tmpPath, 'coSMIC_d*_02b_preproc1_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'DEEP_d*_02b_preproc1_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '03b_eogchan/');
-    fileNamePost = strcat(tmpPath, 'coSMIC_d*_03b_eogchan_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'DEEP_d*_03b_eogchan_', sessionStr, '.mat');
   case 4
     tmpPath = strcat(desPath, '03b_eogchan/');
-    fileNamePre = strcat(tmpPath, 'coSMIC_d*_03b_eogchan_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'DEEP_d*_03b_eogchan_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '04c_preproc2/');
-    fileNamePost = strcat(tmpPath, 'coSMIC_d*_04c_preproc2_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'DEEP_d*_04c_preproc2_', sessionStr, '.mat');
   case 5
     tmpPath = strcat(desPath, '04c_preproc2/');
-    fileNamePre = strcat(tmpPath, 'coSMIC_d*_04c_preproc2_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'DEEP_d*_04c_preproc2_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '05b_allart/');
-    fileNamePost = strcat(tmpPath, 'coSMIC_d*_05b_allart_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'DEEP_d*_05b_allart_', sessionStr, '.mat');
   case 6
     tmpPath = strcat(desPath, '04c_preproc2/');
-    fileNamePre = strcat(tmpPath, 'coSMIC_d*_04c_preproc2_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'DEEP_d*_04c_preproc2_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '06b_hilbert/');
-    fileNamePost = strcat(tmpPath, 'coSMIC_d*_06b_hilbertGamma_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'DEEP_d*_06b_hilbertGamma_', sessionStr, '.mat');
   case 7
     tmpPath = strcat(desPath, '06b_hilbert/');
-    fileNamePre = strcat(tmpPath, 'coSMIC_d*_06b_hilbertGamma_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'DEEP_d*_06b_hilbertGamma_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '07b_mplv/');
-    fileNamePost = strcat(tmpPath, 'coSMIC_d*_07b_mplvGamma_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'DEEP_d*_07b_mplvGamma_', sessionStr, '.mat');
   case 8
     tmpPath = strcat(desPath, '04c_preproc2/');
-    fileNamePre = strcat(tmpPath, 'coSMIC_d*_04c_preproc2_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'DEEP_d*_04c_preproc2_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '08b_pwelch/');
-    fileNamePost = strcat(tmpPath, 'coSMIC_d*_08b_pwelch_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'DEEP_d*_08b_pwelch_', sessionStr, '.mat');
   case 9
     fileNamePre = 0;
   otherwise
@@ -363,7 +363,7 @@ if ~isequal(fileNamePre, 0)
       numOfFiles  = length(fileListPre);
       numOfPrePart = zeros(1, numOfFiles);
       for i=1:1:numOfFiles
-        numOfPrePart(i) = sscanf(fileListPre{i}, strcat('coSMIC_d%d*', sessionStr, '.mat'));
+        numOfPrePart(i) = sscanf(fileListPre{i}, strcat('DEEP_d%d*', sessionStr, '.mat'));
       end
     end
   end
@@ -395,7 +395,7 @@ if ~isequal(fileNamePre, 0)
         numOfFiles  = length(fileListPost);
         numOfPostPart = zeros(1, numOfFiles);
         for i=1:1:numOfFiles
-          numOfPostPart(i) = sscanf(fileListPost{i}, strcat('coSMIC_d%d*', sessionStr, '.mat'));
+          numOfPostPart(i) = sscanf(fileListPost{i}, strcat('DEEP_d%d*', sessionStr, '.mat'));
         end
       end
   

@@ -2,12 +2,12 @@
 if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subFolder = '07b_mplv/';
-  cfg.filename  = 'coSMIC_d01_07b_mplvGamma';
-  sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));             % estimate current session number
+  cfg.filename  = 'DEEP_d01_07b_mplvGamma';
+  sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));               % estimate current session number
 end
 
 if ~exist('desPath', 'var')
-  desPath = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';         % destination path for processed data  
+  desPath = '/data/pt_01888/eegData/DualEEG_DEEP_processedData/';           % destination path for processed data  
 end
 
 %% part 10
@@ -41,7 +41,7 @@ if avgOverDyads == true
 
   for i = 1:1:numel(pbSpec)
     cfg               = [];
-    cfg.path          = strcat(desPath, '07b_mplv/');
+    cfg.path          = strcat(desPath, '07c_mplv/');
     cfg.session       = str2double(sessionStr);
     cfg.passband      = pbSpec(i).name;
 
@@ -50,14 +50,14 @@ if avgOverDyads == true
     % export the averaged PLVs into a *.mat file
     cfg             = [];
     cfg.desFolder   = strcat(desPath, '09a_mplvod/');
-    cfg.filename    = sprintf('coSMIC_09a_mplvod%s', pbSpec(i).fileSuffix);
+    cfg.filename    = sprintf('DEEP_09a_mplvod%s', pbSpec(i).fileSuffix);
     cfg.sessionStr  = sessionStr;
 
     file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                       '.mat');
                    
     fprintf('Saving mean PLVs over dyads at %s (%g-%gHz) in:\n', ...
-              pbSpec(i).name, data_mplvod.bpFreq);
+              pbSpec(i).name, data_mplvod.bpFreqMother);
     fprintf('%s ...\n', file_path);
     DEEP_saveData(cfg, 'data_mplvod', data_mplvod);
     fprintf('Data stored!\n\n');
@@ -93,7 +93,7 @@ if avgOverDyads == true
   % export the averaged TFR values into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '09b_tfrod/');
-  cfg.filename    = 'coSMIC_09b_tfrod';
+  cfg.filename    = 'DEEP_09b_tfrod';
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -134,7 +134,7 @@ if avgOverDyads == true
   % export averaged power spectrum into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '09c_pwelchod/');
-  cfg.filename    = 'coSMIC_09c_pwelchod';
+  cfg.filename    = 'DEEP_09c_pwelchod';
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...

@@ -2,12 +2,12 @@
 if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subFolder = '01a_raw/';
-  cfg.filename  = 'coSMIC_d01_01a_raw';
-  sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));             % estimate current session number
+  cfg.filename  = 'DEEP_d01_01a_raw';
+  sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));               % estimate current session number
 end
 
 if ~exist('desPath', 'var')
-  desPath = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';         % destination path for processed data  
+  desPath = '/data/pt_01888/eegData/DualEEG_DEEP_processedData/';           % destination path for processed data  
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in segmented data folder
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('coSMIC_d%d_01a_raw_', sessionStr, '.mat'));
+                    strcat('DEEP_d%d_01a_raw_', sessionStr, '.mat'));
   end
 end
 
@@ -40,7 +40,7 @@ if ~(exist(settings_file, 'file') == 2)                                     % ch
   cfg.type        = 'settings';
   cfg.sessionStr  = sessionStr;
   
-  DEEP_createTbl(cfg);                                                    % create settings file
+  DEEP_createTbl(cfg);                                                      % create settings file
 end
 
 % Load settings file
@@ -54,7 +54,7 @@ for i = numOfPart
 
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '01a_raw/');
-  cfg.filename    = sprintf('coSMIC_d%02d_01a_raw', i);
+  cfg.filename    = sprintf('DEEP_d%02d_01a_raw', i);
   cfg.sessionStr  = sessionStr;
 
   fprintf('Load raw data...\n');
@@ -80,7 +80,7 @@ for i = numOfPart
   % export the bad channels in a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '02a_badchan/');
-  cfg.filename    = sprintf('coSMIC_d%02d_02a_badchan', i);
+  cfg.filename    = sprintf('DEEP_d%02d_02a_badchan', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -128,7 +128,7 @@ for i = numOfPart
   
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '02b_preproc1/');
-  cfg.filename    = sprintf('coSMIC_d%02d_02b_preproc1', i);
+  cfg.filename    = sprintf('DEEP_d%02d_02b_preproc1', i);
   cfg.sessionStr  = sessionStr;
   
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...

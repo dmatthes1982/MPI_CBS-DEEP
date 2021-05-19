@@ -8,7 +8,7 @@ function DEEP_writeTbl( cfg, data )
 % The input data hast to be from DEEP_PHASELOCKVAL
 %
 % The configuration options are
-%   cfg.desFolder   = destination folder (default: '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/00_settings/')
+%   cfg.desFolder   = destination folder (default: '/data/pt_01888/eegData/DualEEG_DEEP_processedData/00_settings/')
 %   cfg.dyad        = number of dyad
 %   cfg.type        = type of documentation file (options: plv)
 %   cfg.param       = additional params for type 'plv' (options: 'theta', 'alpha', 'beta', 'gamma');
@@ -24,7 +24,7 @@ function DEEP_writeTbl( cfg, data )
 % Get config options
 % -------------------------------------------------------------------------
 desFolder   = ft_getopt(cfg, 'desFolder', ...
-          '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/00_settings/');
+          '/data/pt_01888/eegData/DualEEG_DEEP_processedData/00_settings/');
 dyad        = ft_getopt(cfg, 'dyad', []);
 type        = ft_getopt(cfg, 'type', []);
 param       = ft_getopt(cfg, 'param', []);

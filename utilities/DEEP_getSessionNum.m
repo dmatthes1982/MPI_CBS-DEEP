@@ -6,9 +6,9 @@ function [ num ] = DEEP_getSessionNum( cfg )
 %   [ num ] = DEEP_getSessionNum( cfg )
 %
 % The configuration options are
-%   cfg.desFolder   = destination folder (default: '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/')
+%   cfg.desFolder   = destination folder (default: '/data/pt_01888/eegData/DualEEG_DEEP_processedData/')
 %   cfg.subFolder   = name of subfolder (default: '01_raw/')
-%   cfg.filename    = filename (default: 'coSMIC_d01_01_raw')
+%   cfg.filename    = filename (default: 'DEEP_d01_01_raw')
 %
 % This function requires the fieldtrip toolbox.
 
@@ -17,9 +17,9 @@ function [ num ] = DEEP_getSessionNum( cfg )
 % -------------------------------------------------------------------------
 % Get config options
 % -------------------------------------------------------------------------
-desFolder   = ft_getopt(cfg, 'desFolder', '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/');
+desFolder   = ft_getopt(cfg, 'desFolder', '/data/pt_01888/eegData/DualEEG_DEEP_processedData/');
 subFolder   = ft_getopt(cfg, 'subFolder', '01_raw/');
-filename    = ft_getopt(cfg, 'filename', 'coSMIC_d01_01_raw');
+filename    = ft_getopt(cfg, 'filename', 'DEEP_d01_01_raw');
 
 % -------------------------------------------------------------------------
 % Estimate highest session number

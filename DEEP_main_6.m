@@ -2,12 +2,12 @@
 if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subFolder = '04c_preproc2/';
-  cfg.filename  = 'coSMIC_d01_04c_preproc2';
+  cfg.filename  = 'DEEP_d01_04c_preproc2';
   sessionStr    = sprintf('%03d', DEEP_getSessionNum( cfg ));               % estimate current session number
 end
 
 if ~exist('desPath', 'var')
-  desPath = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';         % destination path for processed data 
+  desPath = '/data/pt_01888/eegData/DualEEG_DEEP_processedData/';           % destination path for processed data 
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in eyecor data folder
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('coSMIC_d%d_04c_preproc2_', sessionStr, '.mat'));
+                    strcat('DEEP_d%d_04c_preproc2_', sessionStr, '.mat'));
   end
 end
 
@@ -82,7 +82,7 @@ for i = numOfPart
 
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '04c_preproc2/');
-  cfg.filename    = sprintf('coSMIC_d%02d_04c_preproc2', i);
+  cfg.filename    = sprintf('DEEP_d%02d_04c_preproc2', i);
   cfg.sessionStr  = sessionStr;
   
   fprintf('Load preprocessed data...\n\n');
@@ -111,7 +111,7 @@ for i = numOfPart
     % export the filtered data into a *.mat file
     cfg             = [];
     cfg.desFolder   = strcat(desPath, '06a_bpfilt/');
-    cfg.filename    = sprintf('coSMIC_d%02d_06a_bpfilt%s', i, ...
+    cfg.filename    = sprintf('DEEP_d%02d_06a_bpfilt%s', i, ...
                                 pbSpecMother(j).fileSuffix);
     cfg.sessionStr  = sessionStr;
 
@@ -138,7 +138,7 @@ for i = numOfPart
   for j = 1:1:numel(pbSpecMother)
     cfg             = [];
     cfg.srcFolder   = strcat(desPath, '06a_bpfilt/');
-    cfg.filename    = sprintf('coSMIC_d%02d_06a_bpfilt%s', i, ...
+    cfg.filename    = sprintf('DEEP_d%02d_06a_bpfilt%s', i, ...
                                 pbSpecMother(j).fileSuffix);
     cfg.sessionStr  = sessionStr;
 
@@ -151,7 +151,7 @@ for i = numOfPart
     % export the hilbert phase data into a *.mat file
     cfg             = [];
     cfg.desFolder   = strcat(desPath, '06b_hilbert/');
-    cfg.filename    = sprintf('coSMIC_d%02d_06b_hilbert%s', i, ...
+    cfg.filename    = sprintf('DEEP_d%02d_06b_hilbert%s', i, ...
                                 pbSpecMother(j).fileSuffix);
     cfg.sessionStr  = sessionStr;
 
