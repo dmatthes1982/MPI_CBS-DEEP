@@ -59,9 +59,9 @@ clear newPaths
 % -------------------------------------------------------------------------
 fprintf('\n<strong>Session selection...</strong>\n');
 srcPath = [datastorepath 'DualEEG_DEEP_processedData/'];
-srcPath = [srcPath  '07b_mplv/'];
+srcPath = [srcPath  '07c_mplv/'];
 
-fileList     = dir([srcPath, 'DEEP_d*_07b_mplvTheta_*.mat']);
+fileList     = dir([srcPath, 'DEEP_d*_07c_mplvTheta_*.mat']);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);
 numOfFiles   = length(fileList);
@@ -70,7 +70,7 @@ sessionNum   = zeros(1, numOfFiles);
 fileListCopy = fileList;
 
 for dyad=1:1:numOfFiles
-  fileListCopy{dyad} = strsplit(fileList{dyad}, '07b_mplvTheta_');
+  fileListCopy{dyad} = strsplit(fileList{dyad}, '07c_mplvTheta_');
   fileListCopy{dyad} = fileListCopy{dyad}{end};
   sessionNum(dyad) = sscanf(fileListCopy{dyad}, '%d.mat');
 end
@@ -135,7 +135,7 @@ fprintf('You have selected the following passband: %s\n\n', passband);
 % Dyad selection
 % -------------------------------------------------------------------------
 fprintf('<strong>Dyad selection...</strong>\n');
-fileList     = dir([srcPath 'DEEP_d*_07b_mplv' passband '_' sessionStr ...
+fileList     = dir([srcPath 'DEEP_d*_07c_mplv' passband '_' sessionStr ...
                     '.mat']);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);                                               % generate list with filenames of all existing dyads
@@ -144,7 +144,7 @@ numOfFiles   = length(fileList);
 listOfPart = zeros(numOfFiles, 1);
 
 for i = 1:1:numOfFiles
-  listOfPart(i) = sscanf(fileList{i}, ['DEEP_d%d_07b_mplv' passband ...     % generate a list of all available numbers of dyads
+  listOfPart(i) = sscanf(fileList{i}, ['DEEP_d%d_07c_mplv' passband ...     % generate a list of all available numbers of dyads
                                         '_' sessionStr '.mat']);
 end
 
@@ -269,7 +269,7 @@ for dyad = 1:1:numOfFiles
 
   if dyad == 1                                                              % extract bandpass specification
     data_stat.passband    = passband;
-    data_stat.range       = data_mplv.bpFreq;
+    data_stat.range       = data_mplv.bpFreqMother;
     data_stat.connections = connections;
   end
   
