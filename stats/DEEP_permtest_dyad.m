@@ -184,9 +184,9 @@ for i_file = 1:numOfFiles
                 passband '_' sessionStr], org_dyad);
             file_data2    = sprintf(['DEEP_d%02.f_06b_hilbert' ... 
                 passband '_' sessionStr], listOfDyads(rand_dyads(i_perm)));
-            file_artifact1 = sprintf(['DEEP_d%02.f_01b_manart_' ...
+            file_artifact1 = sprintf(['DEEP_d%02.f_05b_allart_' ...
                 sessionStr], org_dyad);
-            file_artifact2 = sprintf(['DEEP_d%02.f_01b_manart_' ...
+            file_artifact2 = sprintf(['DEEP_d%02.f_05b_allart_' ...
                 sessionStr], listOfDyads(rand_dyads(i_perm)));
             
             
@@ -196,9 +196,9 @@ for i_file = 1:numOfFiles
             data_sub1=load(file_path_data1);
             data_sub2=load(file_path_data2);
             
-            fprintf('<strong>Load manual, during the testing defined artifacts...\n</strong>');
+            fprintf('<strong>Load automatic and manual defined artifacts...\n</strong>');
             artPath = [datastorepath 'DualEEG_DEEP_processedData/'];
-            artPath = [artPath  '01b_manart/'];
+            artPath = [artPath  '05b_allart/'];
    
             file_path_artifact1 = strcat(artPath, file_artifact1,'.mat');
             file_path_artifact2 = strcat(artPath, file_artifact2,'.mat');
@@ -207,7 +207,7 @@ for i_file = 1:numOfFiles
             
             first_field1 = fieldnames(data_sub1);
             first_field2 = fieldnames(data_sub2);
-
+            
             % mix data from two different dyads
             data_hilbert.mother = data_sub1.(first_field1{1}).(part_id(org_part));
             data_hilbert.child = data_sub2.(first_field2{1}).(part_id(rand_part(i_perm)));
@@ -215,7 +215,13 @@ for i_file = 1:numOfFiles
             data_hilbert.bpFreqMother = data_sub1.(first_field1{1}).bpFreqMother;
             data_hilbert.centerFreqChild = data_sub1.(first_field1{1}).centerFreqChild;
             data_hilbert.bpFreqChild = data_sub1.(first_field1{1}).bpFreqChild;
-          
+            
+            first_field1 = fieldnames(artifact_sub1);
+            first_field2 = fieldnames(artifact_sub2);
+                        
+            cfg_allart.mother = artifact_sub1.(first_field1{1}).(part_id(org_part));
+            cfg_allart.child = artifact_sub2.(first_field2{1}).(part_id(rand_part(i_perm)));
+            
             trial_mother = data_hilbert.mother.trialinfo;
             trial_child = data_hilbert.child.trialinfo;
             
@@ -231,35 +237,44 @@ for i_file = 1:numOfFiles
             data_hilbert  = DEEP_segmentation( cfg, data_hilbert );
             
             % remove manual defined artifacts
-            first_field1 = fieldnames(artifact_sub1);
-            first_field2 = fieldnames(artifact_sub2);
-            
             cfg           = [];
             cfg.part      = 'mother';
-            cfg.artifact  = artifact_sub1.(first_field1{1});
+            cfg.artifact  = cfg_allart;
             cfg.reject    = 'complete';
             cfg.target    = 'single';
 
             fprintf('<strong>Rejection of manual, during the testing defined artifacts</strong>');
             backup = data_hilbert.child;
-            data_hilbert = DEEP_rejectArtifacts(cfg, data_hilbert);
+            try
+                data_hilbert = DEEP_rejectArtifacts(cfg, data_hilbert);
+            catch
+                fprintf('Empty dataset - this permutation will be skipped.\n\n');
+                inc = inc + 1;
+                continue;
+            end
             data_hilbert.child = backup;
             fprintf('\n');
             
             cfg           = [];
             cfg.part      = 'child';
-            cfg.artifact  = artifact_sub2.(first_field1{1});
+            cfg.artifact  = cfg_allart;
             cfg.reject    = 'complete';
             cfg.target    = 'single';
 
-            fprintf('<strong>Rejection of manual, during the testing defined artifacts</strong>');
+            fprintf('<strong>Rejection of artifacts</strong>');
             
             backup = data_hilbert.mother;
-            data_hilbert = DEEP_rejectArtifacts(cfg, data_hilbert);
+            try
+                data_hilbert = DEEP_rejectArtifacts(cfg, data_hilbert);
+            catch
+                fprintf('Empty dataset - this permutation will be skipped.\n\n');
+                inc = inc + 1;
+                continue;
+            end
             data_hilbert.mother = backup;
             fprintf('\n');
             
-            % remove lonely trials
+            % remove subtrials which have not equivalent in the other dataset
             trial_num = unique(data_hilbert.mother.trialinfo);
             mother_trials = zeros(1, length(trial_num));
             child_trials = zeros(1, length(trial_num));
