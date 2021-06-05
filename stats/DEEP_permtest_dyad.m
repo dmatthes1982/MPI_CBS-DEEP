@@ -6,11 +6,12 @@
 filepath = fileparts(mfilename('fullpath'));
 run([filepath '/../DEEP_init.m']);
 
-cprintf([0,0.6,0], '<strong>-------------------------------------------</strong>\n');
+cprintf([0,0.6,0], '<strong>-----------------------------------------------------------------</strong>\n');
 cprintf([0,0.6,0], '<strong>DEEP project</strong>\n');                       
-cprintf([0,0.6,0], '<strong>Surrogate data generator</strong>\n');
-cprintf([0,0.6,0], 'Copyright (C) 2020, Mohammed Alahmadi, MPI CBS\n');
-cprintf([0,0.6,0], '<strong>-------------------------------------------</strong>\n');
+cprintf([0,0.6,0], '<strong>Surrogate data generator (between dyads)</strong>\n');
+cprintf([0,0.6,0], 'Copyright (C) 2021, Mohammed Alahmadi, MPI CBS,\n');
+cprintf([0,0.6,0], 'Daniel Matthes, HTWK Leipzig, Laboratory for Biosignal Processing\n');
+cprintf([0,0.6,0], '<strong>-----------------------------------------------------------------</strong>\n');
 
 % -------------------------------------------------------------------------
 % Path settings
@@ -112,7 +113,7 @@ clear sessionNum fileListCopy y userList match filePath cmdout attrib ...
 % Passband selection
 % -------------------------------------------------------------------------
 fprintf('<strong>Passband selection...</strong>\n');
-passband  = {'Alpha', 'Beta', 'Gamma'};                                     % all available passbands
+passband  = {'Theta', 'Alpha', 'Beta', 'Gamma'};                            % all available passbands
 
 part = listdlg('PromptString',' Select passband...', ...                    % open the dialog window --> the user can select the passband of interest
                 'SelectionMode', 'single', ...
@@ -231,10 +232,14 @@ for i_file = 1:numOfFiles
             data_hilbert = DEEP_selectdata(cfg, data_hilbert);
             
             % segmentation
-            cfg           = [];
-            cfg.length    = 1;
-            cfg.overlap   = 0;
-            data_hilbert  = DEEP_segmentation( cfg, data_hilbert );
+            cfg             = [];
+            if strcmp(passband, 'Theta')
+                cfg.length  = 5;
+            else
+                cfg.length  = 1;
+            end
+            cfg.overlap     = 0;
+            data_hilbert    = DEEP_segmentation( cfg, data_hilbert );
             
             % remove manual defined artifacts
             cfg           = [];
