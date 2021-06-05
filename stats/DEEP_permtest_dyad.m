@@ -9,7 +9,7 @@ run([filepath '/../DEEP_init.m']);
 cprintf([0,0.6,0], '<strong>-----------------------------------------------------------------</strong>\n');
 cprintf([0,0.6,0], '<strong>DEEP project</strong>\n');                       
 cprintf([0,0.6,0], '<strong>Surrogate data generator (between dyads)</strong>\n');
-cprintf([0,0.6,0], 'Copyright (C) 2021, Mohammed Alahmadi, MPI CBS,\n');
+cprintf([0,0.6,0], 'Copyright (C) 2020-2021, Mohammed Alahmadi, MPI CBS,\n');
 cprintf([0,0.6,0], 'Daniel Matthes, HTWK Leipzig, Laboratory for Biosignal Processing\n');
 cprintf([0,0.6,0], '<strong>-----------------------------------------------------------------</strong>\n');
 
@@ -198,8 +198,7 @@ for i_file = 1:numOfFiles
             data_sub2=load(file_path_data2);
             
             fprintf('<strong>Load automatic and manual defined artifacts...\n</strong>');
-            artPath = [datastorepath 'DualEEG_DEEP_processedData/'];
-            artPath = [artPath  '05b_allart/'];
+            artPath = [datastorepath 'DualEEG_DEEP_processedData/05b_allart/'];
    
             file_path_artifact1 = strcat(artPath, file_artifact1,'.mat');
             file_path_artifact2 = strcat(artPath, file_artifact2,'.mat');
@@ -309,8 +308,8 @@ for i_file = 1:numOfFiles
             % fake PLV estimation
             cfg           = [];
             cfg.winlen    = 1;
-            dataPLV       = DEEP_phaseLockVal(cfg,  data_hilbert);
-            dataPLV       = DEEP_calcMeanPLV(dataPLV);
+            data_mplv     = DEEP_phaseLockVal(cfg,  data_hilbert);
+            data_mplv     = DEEP_calcMeanPLV(data_mplv);
 
             % save preprocessed data
             desFolder   = strcat(desPath);
@@ -319,7 +318,7 @@ for i_file = 1:numOfFiles
                 org_dyad, inc), '.mat');
             fprintf('The surrogate plv data of dyad will be saved in '); 
             fprintf('%s ...\n', file_path);
-            save(file_path, 'dataPLV');
+            save(file_path, 'data_mplv');
             fprintf('Data stored!\n\n');
             inc = inc + 1;
         end

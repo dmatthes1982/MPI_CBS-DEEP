@@ -8,7 +8,7 @@ run([filepath '/../DEEP_init.m']);
 cprintf([0,0.6,0], '<strong>----------------------------------------------------</strong>\n');
 cprintf([0,0.6,0], '<strong>Synchronization in Mother Infant Contingency project</strong>\n');
 cprintf([0,0.6,0], '<strong>Export of PLV results (general script)</strong>\n');
-cprintf([0,0.6,0], 'Copyright (C) 2018-2019, Daniel Matthes, MPI CBS\n');
+cprintf([0,0.6,0], 'Copyright (C) 2018-2021, Daniel Matthes, MPI CBS\n');
 cprintf([0,0.6,0], '<strong>----------------------------------------------------</strong>\n');
 
 % -------------------------------------------------------------------------
@@ -41,64 +41,86 @@ end
 clear newPaths
 
 % -------------------------------------------------------------------------
-% Session selection
+% Pipeline output or surrogate data
 % -------------------------------------------------------------------------
-fprintf('\n<strong>Session selection...</strong>\n');
-srcPath = [path 'DualEEG_DEEP_processedData/'];
-srcPath = [srcPath  '07b_mplv/'];
-
-fileList     = dir([srcPath, 'DEEP_d*_07b_mplvTheta_*.mat']);
-fileList     = struct2cell(fileList);
-fileList     = fileList(1,:);
-numOfFiles   = length(fileList);
-
-sessionNum   = zeros(1, numOfFiles);
-fileListCopy = fileList;
-
-for dyad=1:1:numOfFiles
-  fileListCopy{dyad} = strsplit(fileList{dyad}, '07b_mplvTheta_');
-  fileListCopy{dyad} = fileListCopy{dyad}{end};
-  sessionNum(dyad) = sscanf(fileListCopy{dyad}, '%d.mat');
-end
-
-sessionNum = unique(sessionNum);
-y = sprintf('%d ', sessionNum);
-
-userList = cell(1, length(sessionNum));
-
-for dyad = sessionNum
-  match = find(strcmp(fileListCopy, sprintf('%03d.mat', dyad)), 1, 'first');
-  filePath = [srcPath, fileList{match}];
-  [~, cmdout] = system(['ls -l ' filePath '']);
-  attrib = strsplit(cmdout);
-  userList{dyad} = attrib{3};
-end
-
 selection = false;
 while selection == false
-  fprintf('The following sessions are available: %s\n', y);
-  fprintf('The session owners are:\n');
-  for dyad = sessionNum
-    fprintf('%d - %s\n', dyad, userList{dyad});
-  end
-  fprintf('\n');
-  fprintf('Please select one session:\n');
-  fprintf('[num] - Select session\n\n');
-  x = input('Session: ');
-
-  if length(x) > 1
-    cprintf([1,0.5,0], 'Wrong input, select only one session!\n');
+  fprintf('\nDo you want to use (a) the pipeline ouput or (b) the surrogate data?\n');
+  x = input('Select [a/b]: ','s');
+  if strcmp('a', x)
+    selection = true;
+    surrogate = false;
+  elseif strcmp('b', x)
+    selection = true;
+    surrogate = true;
   else
-    if ismember(x, sessionNum)
-      selection = true;
-      sessionStr = sprintf('%03d', x);
-    else
-      cprintf([1,0.5,0], 'Wrong input, session does not exist!\n');
-    end
+    selection = false;
   end
 end
 
-fprintf('\n');
+% -------------------------------------------------------------------------
+% Session selection
+% -------------------------------------------------------------------------
+if surrogate
+    srcPath = [path 'DualEEG_DEEP_surrogate_analysis/'];
+else 
+    fprintf('\n<strong>Session selection...</strong>\n');
+    srcPath = [path 'DualEEG_DEEP_processedData/'];
+    srcPath = [srcPath  '07c_mplv/'];
+
+    fileList     = dir([srcPath, 'DEEP_d*_07c_mplvTheta_*.mat']);
+    fileList     = struct2cell(fileList);
+    fileList     = fileList(1,:);
+    numOfFiles   = length(fileList);
+
+    sessionNum   = zeros(1, numOfFiles);
+    fileListCopy = fileList;
+
+    for dyad=1:1:numOfFiles
+      fileListCopy{dyad} = strsplit(fileList{dyad}, '07c_mplvTheta_');
+      fileListCopy{dyad} = fileListCopy{dyad}{end};
+      sessionNum(dyad) = sscanf(fileListCopy{dyad}, '%d.mat');
+    end
+
+    sessionNum = unique(sessionNum);
+    y = sprintf('%d ', sessionNum);
+
+    userList = cell(1, length(sessionNum));
+
+    for dyad = sessionNum
+      match = find(strcmp(fileListCopy, sprintf('%03d.mat', dyad)), 1, 'first');
+      filePath = [srcPath, fileList{match}];
+      [~, cmdout] = system(['ls -l ' filePath '']);
+      attrib = strsplit(cmdout);
+      userList{dyad} = attrib{3};
+    end
+
+    selection = false;
+    while selection == false
+      fprintf('The following sessions are available: %s\n', y);
+      fprintf('The session owners are:\n');
+      for dyad = sessionNum
+        fprintf('%d - %s\n', dyad, userList{dyad});
+      end
+      fprintf('\n');
+      fprintf('Please select one session:\n');
+      fprintf('[num] - Select session\n\n');
+      x = input('Session: ');
+
+      if length(x) > 1
+        cprintf([1,0.5,0], 'Wrong input, select only one session!\n');
+      else
+        if ismember(x, sessionNum)
+          selection = true;
+          sessionStr = sprintf('%03d', x);
+        else
+          cprintf([1,0.5,0], 'Wrong input, session does not exist!\n');
+        end
+      end
+    end
+
+    fprintf('\n');
+end
 
 clear sessionNum fileListCopy y userList match filePath cmdout attrib ...
       fileList numOfFiles x selection dyad
@@ -121,17 +143,26 @@ fprintf('You have selected the following passband: %s\n\n', passband);
 % Dyad selection
 % -------------------------------------------------------------------------
 fprintf('<strong>Dyad selection...</strong>\n');
-fileList     = dir([srcPath 'DEEP_d*_07b_mplv' passband '_' sessionStr...
+if surrogate
+    fileList     = dir([srcPath 'DEEP_d*_perm*' passband '.mat']);    
+else
+    fileList     = dir([srcPath 'DEEP_d*_07c_mplv' passband '_' sessionStr...
                     '.mat']);
+end
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);                                               % generate list with filenames of all existing dyads
 numOfFiles   = length(fileList);
 
 listOfPart = zeros(numOfFiles, 1);
 
-for i = 1:1:numOfFiles
-  listOfPart(i) = sscanf(fileList{i}, ['DEEP_d%d_07b_mplv' passband ...   % generate a list of all available numbers of dyads
-                                        '_' sessionStr '.mat']);
+for i = 1:1:numOfFiles                                                      % generate a list of all available numbers of dyads  
+    if surrogate
+        listOfPart(i) = sscanf(fileList{i}, ['DEEP_d%d_perm*' ...
+            passband '.mat']);
+    else
+        listOfPart(i) = sscanf(fileList{i}, ['DEEP_d%d_07c_mplv' ...  
+            passband '_' sessionStr '.mat']);
+    end
 end
 
 listOfPartStr = cellfun(@(x) sprintf('%d', x), ...                          % prepare a cell array with all possible options for the following list dialog
@@ -160,7 +191,7 @@ clear listOfPart listOfPartStr listOfPartBool i
 % -------------------------------------------------------------------------
 fprintf('<strong>Conditions selection...</strong>\n');
 filepath = fileparts(mfilename('fullpath'));
-load(sprintf('%s/../general/DEEP_generalDefinitions.mat', filepath), ...  % load general definitions
+load(sprintf('%s/../general/DEEP_generalDefinitions.mat', filepath), ...    % load general definitions
      'generalDefinitions');
 
 condMark  = cellfun(@(x) sprintf('S%3d', x), ...                            % extract condition identifiers
@@ -246,6 +277,9 @@ clear data_mplv numOfChan connMatrix row col part i label_x label_y ...
 % Generate xls file
 % -------------------------------------------------------------------------
 fprintf('<strong>Identifier specification...</strong>\n');
+if surrogate
+    sessionStr = '000';
+end
 desPath = [path 'DualEEG_DEEP_results/PLV_export/general/' sessionStr ...   % destination path
           '/'];
 
@@ -386,4 +420,4 @@ writetable(Tdata, xlsFile, 'Sheet', 'data');
 % -------------------------------------------------------------------------
 % Clear workspace
 % -------------------------------------------------------------------------
-clear xlsFile Tdata Tinfo
+clear xlsFile Tdata Tinfo surrogate
