@@ -93,15 +93,15 @@ T = readtable(file_path);                                                   % up
 warning off;
 pbMotherString = cellfun(@(x) mat2str(x), {pbSpecMother(:).freqRange}, ...
                             'UniformOutput', false);
-T.pbSpecMother(numOfPart) = {strjoin(pbMotherString,',')};
+T.pbSpecMother(numOfPart) = { strjoin(pbMotherString,',') };
 pbChildString = cellfun(@(x) mat2str(x), {pbSpecChild(:).freqRange}, ...
                             'UniformOutput', false);
-T.pbSpecChild(numOfPart) = {strjoin(pbChildString,',')};
+T.pbSpecChild(numOfPart) = { strjoin(pbChildString,',') };
 warning on;
 delete(file_path);
 writetable(T, file_path);
 
-
+clear pbMotherString pbChildString  T
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% bandpass filtering

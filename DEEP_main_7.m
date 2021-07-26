@@ -29,10 +29,10 @@ end
 %    Split the data of every condition into subtrials with a length of 5 
 %    or 1 seconds.
 % 2. Artifact rejection
-% 3. PLV estimation
-% 4. mPLV estimation
+% 3. PLV or crossPLV estimation
+% 4. mPLV or mCrossPLV estimation
 
-cprintf([0,0.6,0], '<strong>[7] - Estimation of Phase Locking Values (PLV)</strong>\n');
+cprintf([0,0.6,0], '<strong>[7] - Estimation of Phase Locking Values (PLV) or Cross Phase Locking Values (PLV)</strong>\n');
 fprintf('\n');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -52,24 +52,6 @@ while choise == false
   end
 end
 fprintf('\n');
-
-% Write selected settings to settings file
-file_path = [desPath '00_settings/' sprintf('settings_%s', sessionStr) '.xls'];
-if ~(exist(file_path, 'file') == 2)                                         % check if settings file already exist
-  cfg = [];
-  cfg.desFolder   = [desPath '00_settings/'];
-  cfg.type        = 'settings';
-  cfg.sessionStr  = sessionStr;
-  
-  DEEP_createTbl(cfg);                                                      % create settings file
-end
-
-T = readtable(file_path);                                                   % update settings table
-warning off;
-T.artRejectPLV(numOfPart) = { x };
-warning on;
-delete(file_path);
-writetable(T, file_path);
 
 % option to define segment durations manually
 selection = false;
@@ -94,7 +76,7 @@ while selection == false
 end
 fprintf('\n');
 
-%% segment duration specifications
+% segment duration specifications
 [pbSpec(1:4).fileSuffix]    = deal('Theta','Alpha','Beta','Gamma');
 [pbSpec(1:4).name]          = deal('theta','alpha','beta','gamma');
     
@@ -104,7 +86,28 @@ else
     segmentation = DEEP_segSelectbox();
     [pbSpec(1:4).winLength]     = deal(segmentation{:});
 end
-    
+
+% Write selected settings to settings file
+file_path = [desPath '00_settings/' sprintf('settings_%s', sessionStr) '.xls'];
+if ~(exist(file_path, 'file') == 2)                                         % check if settings file already exist
+  cfg = [];
+  cfg.desFolder   = [desPath '00_settings/'];
+  cfg.type        = 'settings';
+  cfg.sessionStr  = sessionStr;
+  
+  DEEP_createTbl(cfg);                                                      % create settings file
+end
+
+T = readtable(file_path);                                                   % update settings table
+warning off;
+T.artRejectPLV(numOfPart) = { x };
+segLengthsString = cellfun(@(x) mat2str(x), {pbSpec(:).winLength}, ...
+                            'UniformOutput', false);
+T.plvSegLengths(numOfPart) = { strjoin(segLengthsString,',') };
+warning on;
+delete(file_path);
+writetable(T, file_path);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Segmentation, artifact rejection, PLV and mPLV estimation
 
@@ -240,4 +243,5 @@ end
 
 %% clear workspace
 clear cfg file_path sourceList numOfSources i artifactRejection ...
-      artifactAvailable x choise T pbSpec j selection segmentation
+      artifactAvailable x choise T pbSpec j selection segmentation ...
+      segLengthsString
