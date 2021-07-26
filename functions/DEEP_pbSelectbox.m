@@ -7,7 +7,8 @@ function [passband] = DEEP_pbSelectbox( cfg )
 %   [ passband ]  = DEEP_pbSelectbox( cfg )
 %
 % The configuration options are
-%   cfg.boxName = name of the select box;
+%   cfg.boxName         = name of the select box;
+%   cfg.defaultValues   = default ranges for the different passbands
 %
 % This function requires the fieldtrip toolbox.
 %
@@ -19,7 +20,8 @@ function [passband] = DEEP_pbSelectbox( cfg )
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-boxName    = ft_getopt(cfg, 'boxName', {'Specify passbands [MOTHER]'});
+boxName         = ft_getopt(cfg, 'boxName', {'Specify passbands [MOTHER]'});
+defaultValues   = ft_getopt(cfg, 'defaultValues', {[4 7],[8 12],[13 30],[31 48]});
 
 % -------------------------------------------------------------------------
 % Create GUI
@@ -45,12 +47,12 @@ theta.lbl.Text = 'theta';
 % Create theta fmin editfield
 theta.fmin = uieditfield(pbSelectbox, 'numeric');
 theta.fmin.Position = [125 150 80 15];
-theta.fmin.Value = 4;
+theta.fmin.Value = defaultValues{1}(1);
 theta.fmin.Limits = [2 6.8];
 % Create theta fmax editfield
 theta.fmax = uieditfield(pbSelectbox, 'numeric');
 theta.fmax.Position = [235 150 80 15];
-theta.fmax.Value = 7;
+theta.fmax.Value = defaultValues{1}(2);
 theta.fmax.Limits = [4.2 8];
 
 % Create alpha label
@@ -60,12 +62,12 @@ alpha.lbl.Text = 'alpha';
 % Create alpha fmin editfield
 alpha.fmin = uieditfield(pbSelectbox, 'numeric');
 alpha.fmin.Position = [125 125 80 15];
-alpha.fmin.Value = 8;
+alpha.fmin.Value = defaultValues{2}(1);
 alpha.fmin.Limits = [5 11.8];
 % Create alpha fmax editfield
 alpha.fmax = uieditfield(pbSelectbox, 'numeric');
 alpha.fmax.Position = [235 125 80 15];
-alpha.fmax.Value = 12;
+alpha.fmax.Value = defaultValues{2}(2);
 alpha.fmax.Limits = [8.2 13];
 
 % Create beta label
@@ -75,12 +77,12 @@ beta.lbl.Text = 'beta';
 % Create beta fmin editfield
 beta.fmin = uieditfield(pbSelectbox, 'numeric');
 beta.fmin.Position = [125 100 80 15];
-beta.fmin.Value = 13;
+beta.fmin.Value = defaultValues{3}(1);
 beta.fmin.Limits = [9 29.8];
 % Create beta fmax editfield
 beta.fmax = uieditfield(pbSelectbox, 'numeric');
 beta.fmax.Position = [235 100 80 15];
-beta.fmax.Value = 30;
+beta.fmax.Value = defaultValues{3}(2);
 beta.fmax.Limits = [13.2 30];
 
 % Create gamma label
@@ -90,12 +92,12 @@ gamma.lbl.Text = 'gamma';
 % Create beta fmin editfield
 gamma.fmin = uieditfield(pbSelectbox, 'numeric');
 gamma.fmin.Position = [125 75 80 15];
-gamma.fmin.Value = 31;
+gamma.fmin.Value = defaultValues{4}(1);
 gamma.fmin.Limits = [30 47.8];
 % Create beta fmax editfield
 gamma.fmax = uieditfield(pbSelectbox, 'numeric');
 gamma.fmax.Position = [235 75 80 15];
-gamma.fmax.Value = 48;
+gamma.fmax.Value = defaultValues{4}(2);
 gamma.fmax.Limits = [31.2 250];
 
 % Create SaveButton

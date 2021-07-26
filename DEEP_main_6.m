@@ -52,19 +52,23 @@ while selection == false
 end
 fprintf('\n');
 
-%% passband specifications
+% passband specifications
 if passband == true
   [pbSpecMother(1:4).freqRange]   = deal([4 7],[8 12],[13 30],[31 48]);
   [pbSpecChild(1:4).freqRange]    = deal([4 7],[8 12],[13 30],[31 48]);
 else
   cfg.boxName = 'Specify passbands [MOTHER]';
+  cfg.defaultValues = {[4 7],[8 12],[13 30],[31 48]};
   passbandMother = DEEP_pbSelectbox(cfg);
   cfg.boxName = 'Specify passbands [INFANT]';
+  cfg.defaultValues = {[3 5],[6 9],[13 30],[31 48]};
   passbandChild = DEEP_pbSelectbox(cfg);
   
   [pbSpecMother(1:4).freqRange]   = deal(passbandMother{:});
   [pbSpecChild(1:4).freqRange]    = deal(passbandChild{:});
 end
+
+clear passbandMother passbandChild
 
 [pbSpecMother(1:4).fileSuffix]    = deal('Theta','Alpha','Beta','Gamma');
 [pbSpecMother(1:4).name]          = deal('theta','alpha','beta','gamma');
@@ -73,6 +77,31 @@ end
 [pbSpecChild(1:4).fileSuffix]     = deal('Theta','Alpha','Beta','Gamma');
 [pbSpecChild(1:4).name]           = deal('theta','alpha','beta','gamma');
 [pbSpecChild(1:4).filtOrdBase]    = deal(500, 250, 250, 250);
+
+% Write selected settings to settings file
+file_path = [desPath '00_settings/' sprintf('settings_%s', sessionStr) '.xls'];
+if ~(exist(file_path, 'file') == 2)                                         % check if settings file already exist
+  cfg = [];
+  cfg.desFolder   = [desPath '00_settings/'];
+  cfg.type        = 'settings';
+  cfg.sessionStr  = sessionStr;
+  
+  DEEP_createTbl(cfg);                                                      % create settings file
+end
+
+T = readtable(file_path);                                                   % update settings table
+warning off;
+pbMotherString = cellfun(@(x) mat2str(x), {pbSpecMother(:).freqRange}, ...
+                            'UniformOutput', false);
+T.pbSpecMother(numOfPart) = {strjoin(pbMotherString,',')};
+pbChildString = cellfun(@(x) mat2str(x), {pbSpecChild(:).freqRange}, ...
+                            'UniformOutput', false);
+T.pbSpecChild(numOfPart) = {strjoin(pbChildString,',')};
+warning on;
+delete(file_path);
+writetable(T, file_path);
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% bandpass filtering
