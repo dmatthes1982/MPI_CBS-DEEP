@@ -42,6 +42,7 @@ if avgOverDyads == true
   for i = 1:1:numel(pbSpec)
     cfg               = [];
     cfg.path          = strcat(desPath, '07c_mplv/');
+    cfg.plvtype       = 'plv';
     cfg.session       = str2double(sessionStr);
     cfg.passband      = pbSpec(i).name;
 
@@ -62,6 +63,57 @@ if avgOverDyads == true
     DEEP_saveData(cfg, 'data_mplvod', data_mplvod);
     fprintf('Data stored!\n\n');
     clear data_mplvod
+  end
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Averaging mcrossPLVs over dyads
+choise = false;
+while choise == false
+  cprintf([0,0.6,0], 'Averaging mcrossPLVs over dyads?\n');
+  x = input('Select [y/n]: ','s');
+  if strcmp('y', x)
+    choise = true;
+    avgOverDyads = true;
+  elseif strcmp('n', x)
+    choise = true;
+    avgOverDyads = false;
+  else
+    choise = false;
+  end
+end
+fprintf('\n');
+
+if avgOverDyads == true
+  % passband specifications
+  [pbSpec(1:4).fileSuffix]  = deal('Theta','Alpha','Beta','Gamma');
+  [pbSpec(1:4).name]        = deal('theta','alpha','beta','gamma');
+
+  for i = 1:1:numel(pbSpec)
+    cfg               = [];
+    cfg.path          = strcat(desPath, '07e_mcrossplv/');
+    cfg.plvtype       = 'crossplv';
+    cfg.session       = str2double(sessionStr);
+    cfg.passband      = pbSpec(i).name;
+
+    data_mcrossplvod  = DEEP_mPLVoverDyads( cfg );
+
+    % export the averaged PLVs into a *.mat file
+    cfg             = [];
+    cfg.desFolder   = strcat(desPath, '09d_mcrossplvod/');
+    cfg.filename    = sprintf('DEEP_09d_mcrossplvod%s', pbSpec(i).fileSuffix);
+    cfg.sessionStr  = sessionStr;
+
+    file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
+                      '.mat');
+                   
+    fprintf('Saving mean cross PLVs over dyads at %s (%g-%gHz and %g-%gHz) in:\n', ...
+              pbSpec(i).name, data_mcrossplvod.bpFreqMother, ...
+              data_mcrossplvod.bpFreqChild);
+    fprintf('%s ...\n', file_path);
+    DEEP_saveData(cfg, 'data_mcrossplvod', data_mcrossplvod);
+    fprintf('Data stored!\n\n');
+    clear data_mcrossplvod
   end
 end
 

@@ -7,6 +7,7 @@ function [ data_mplvod ] = DEEP_mPLVoverDyads( cfg )
 %
 % The configuration options are
 %   cfg.path      = source path' (i.e. '/data/pt_01888/eegData/DualEEG_DEEP_processedData/07c_mplv/')
+%   cfg.plvtype   = type of PLV data ('plv' or 'crossplv'
 %   cfg.session   = session number (default: 1)
 %   cfg.passband  = select passband of interest (default: theta)
 %                   (accepted values: theta, alpha, beta, gamma)
@@ -22,6 +23,7 @@ function [ data_mplvod ] = DEEP_mPLVoverDyads( cfg )
 % -------------------------------------------------------------------------
 path      = ft_getopt(cfg, 'path', ...
               '/data/pt_01888/eegData/DualEEG_DEEP_processedData/07c_mplv/');
+plvtype   = ft_getopt(cfg, 'plvtype', 'plv');         
 session   = ft_getopt(cfg, 'session', 1);
 passband  = ft_getopt(cfg, 'passband', 'theta');
 
@@ -45,20 +47,36 @@ load(sprintf('%s/../general/DEEP_generalDefinitions.mat', filepath), ...
 % -------------------------------------------------------------------------
 % Select dyads
 % -------------------------------------------------------------------------    
-fprintf('<strong>Averaging of Phase Locking Values over dyads at %s...</strong>\n', passband);
+if strcmp(plvtype, 'plv') 
+  fprintf('<strong>Averaging of Phase Locking Values over dyads at %s...</strong>\n', passband);
 
-dyadsList   = dir([path, sprintf('DEEP_d*_07c_mplv%s_%03d.mat', ...
-                   fileSuffix, session)]);
+  dyadsList   = dir([path, sprintf('DEEP_d*_07c_mplv%s_%03d.mat', ...
+                     fileSuffix, session)]);
+elseif strcmp(plvtype, 'crossplv')
+  fprintf('<strong>Averaging of Cross Phase Locking Values over dyads at %s...</strong>\n', passband);
+
+  dyadsList   = dir([path, sprintf('DEEP_d*_07e_mcrossplv%s_%03d.mat', ...
+                     fileSuffix, session)]);
+end
+
 dyadsList   = struct2cell(dyadsList);
 dyadsList   = dyadsList(1,:);
 numOfDyads  = length(dyadsList);
 
-for i=1:1:numOfDyads
-  listOfDyads(i) = sscanf(dyadsList{i}, ['DEEP_d%d_07c_mplv'...
-                                   sprintf('%s_', fileSuffix) ...
-                                   sprintf('%03d.mat', session)]);          %#ok<AGROW>
+if strcmp(plvtype, 'plv')
+  for i=1:1:numOfDyads
+    listOfDyads(i) = sscanf(dyadsList{i}, ['DEEP_d%d_07c_mplv'...
+                                     sprintf('%s_', fileSuffix) ...
+                                     sprintf('%03d.mat', session)]);        %#ok<AGROW>
+  end
+elseif strcmp(plvtype, 'crossplv')
+  for i=1:1:numOfDyads
+    listOfDyads(i) = sscanf(dyadsList{i}, ['DEEP_d%d_07e_crossmplv'...
+                                     sprintf('%s_', fileSuffix) ...
+                                     sprintf('%03d.mat', session)]);        %#ok<AGROW>
+  end
 end
-
+    
 y = sprintf('%d ', listOfDyads);
 selection = false;
 
@@ -83,22 +101,42 @@ data_mplvod.avgData.trialinfo = generalDefinitions.condNumDual;
 data{1, numOfDyads} = [];
 trialinfo{1, numOfDyads} = [];
 
-for i=1:1:numOfDyads
-  filename = sprintf('DEEP_d%02d_07c_mplv%s_%03d.mat', listOfDyads(i), ...
-                    fileSuffix, session);
-  file = strcat(path, filename);
-  fprintf('Load %s ...\n', filename);
-  load(file, 'data_mplv');
-  data{i} = data_mplv.dyad.mPLV;
-  trialinfo{i} = data_mplv.dyad.trialinfo;
-  if i == 1
-    data_mplvod.centerFreqMother    = data_mplv.centerFreqMother;
-    data_mplvod.bpFreqMother        = data_mplv.bpFreqMother;
-    data_mplvod.centerFreqChild     = data_mplv.centerFreqChild;
-    data_mplvod.bpFreqChild         = data_mplv.bpFreqChild;
-    data_mplvod.avgData.label       = data_mplv.dyad.label;
+if strcmp(plvtype, 'plv')
+  for i=1:1:numOfDyads
+    filename = sprintf('DEEP_d%02d_07c_mplv%s_%03d.mat', listOfDyads(i), ...
+                      fileSuffix, session);
+    file = strcat(path, filename);
+    fprintf('Load %s ...\n', filename);
+    load(file, 'data_mplv');
+    data{i} = data_mplv.dyad.mPLV;
+    trialinfo{i} = data_mplv.dyad.trialinfo;
+    if i == 1
+      data_mplvod.centerFreqMother    = data_mplv.centerFreqMother;
+      data_mplvod.bpFreqMother        = data_mplv.bpFreqMother;
+      data_mplvod.centerFreqChild     = data_mplv.centerFreqChild;
+      data_mplvod.bpFreqChild         = data_mplv.bpFreqChild;
+      data_mplvod.avgData.label       = data_mplv.dyad.label;
+    end
+    clear data_mplv
   end
-  clear data_mplv
+elseif strcmp(plvtype, 'crossplv')
+  for i=1:1:numOfDyads
+    filename = sprintf('DEEP_d%02d_07e_mcrossplv%s_%03d.mat', listOfDyads(i), ...
+                      fileSuffix, session);
+    file = strcat(path, filename);
+    fprintf('Load %s ...\n', filename);
+    load(file, 'data_mcrossplv');
+    data{i} = data_mcrossplv.dyad.mPLV;
+    trialinfo{i} = data_mcrossplv.dyad.trialinfo;
+    if i == 1
+      data_mplvod.centerFreqMother    = data_mcrossplv.centerFreqMother;
+      data_mplvod.bpFreqMother        = data_mcrossplv.bpFreqMother;
+      data_mplvod.centerFreqChild     = data_mcrossplv.centerFreqChild;
+      data_mplvod.bpFreqChild         = data_mcrossplv.bpFreqChild;
+      data_mplvod.avgData.label       = data_mcrossplv.dyad.label;
+    end
+    clear data_mcrossplv
+  end
 end
 
 data = fixTrialOrder( data, trialinfo, generalDefinitions.condNumDual, ...
@@ -145,7 +183,7 @@ for k = 1:1:size(dataTmp, 2)
             dyadNum(k), missingPhases));
     [~, loc] = ismember(trlInfOrg, trlInf{k});
     tmpBuffer = [];
-    tmpBuffer{length(trlInfOrg)} = [];                                       %#ok<AGROW>
+    tmpBuffer{length(trlInfOrg)} = [];                                      %#ok<AGROW>
     for l = 1:1:length(trlInfOrg)
       if loc(l) == 0
         tmpBuffer{l} = emptyMatrix;

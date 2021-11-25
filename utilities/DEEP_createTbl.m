@@ -8,7 +8,7 @@ function DEEP_createTbl( cfg )
 %
 % The configuration options are
 %   cfg.desFolder   = destination folder (default: '/data/pt_01888/eegData/DualEEG_DEEP_processedData/00_settings/')
-%   cfg.type        = type of documentation file (options: 'settings', 'plv')
+%   cfg.type        = type of documentation file (options: 'settings', 'plv', 'crossplv')
 %   cfg.param       = additional params for type 'plv' (options: 'theta', 'alpha', 'beta', 'gamma');
 %   cfg.sessionStr  = number of session, format: %03d, i.e.: '003' (default: '001')
 %
@@ -31,10 +31,10 @@ sessionStr  = ft_getopt(cfg, 'sessionStr', []);
 
 if isempty(type)
   error(['cfg.type has to be specified. It could be either ''settings'''...
-         ' or ''plv''.']);
+         ' ''plv'' or ''crossplv''.']);
 end
 
-if strcmp(type, 'plv')
+if strcmp(type, 'plv') || strcmp(type, 'crossplv')
   if isempty(param)
     error([ 'cfg.param has to be specified. Selectable options: '...
             '''theta'', ''alpha'', ''beta'', ''gamma''']);
@@ -78,9 +78,20 @@ switch type
     VarNames = [{'dyad'} C];
     T.Properties.VariableNames = VarNames;
     filepath = [desFolder type '_' param '_' sessionStr '.xls'];
-    writetable(T, filepath); 
+    writetable(T, filepath);
+  case 'crossplv'
+    A(1) = {1};
+    A(2:length(generalDefinitions.condNumDual)+1) = {0};
+    T = cell2table(A);
+    B = num2cell(generalDefinitions.condNumDual);
+    C = cellfun(@(x) sprintf('S%d', x), B, 'UniformOutput', 0);                            
+    VarNames = [{'dyad'} C];
+    T.Properties.VariableNames = VarNames;
+    filepath = [desFolder type '_' param '_' sessionStr '.xls'];
+    writetable(T, filepath);  
   otherwise
-    error('cfg.type is not valid. Use either ''settings'' or ''plv''.');
+    error(['cfg.type is not valid. Use either ''settings'', ''plv'' or'...
+          '''crossplv''.']);
 end
 
 end

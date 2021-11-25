@@ -238,7 +238,7 @@ else
     fprintf('[4]  - Preproc II: ICA-based artifact correction, bad channel recovery, re-referencing\n');
     fprintf('[5]  - Automatic and manual artifact detection\n');
     fprintf('[6]  - Narrow band filtering and Hilbert transform\n'); 
-    fprintf('[7]  - Estimation of Phase Locking Values (PLV)\n');
+    fprintf('[7]  - Estimation of Phase Locking Values (PLV) or cross Phase Locking Values (crossPLV)\n');
     fprintf('[8]  - Power analysis (TFR, pWelch)\n');
     fprintf('[9]  - Averaging over dyads\n');
     fprintf('[10] - Quit data processing\n\n');

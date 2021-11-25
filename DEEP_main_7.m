@@ -32,7 +32,7 @@ end
 % 3. PLV or crossPLV estimation
 % 4. mPLV or mCrossPLV estimation
 
-cprintf([0,0.6,0], '<strong>[7] - Estimation of Phase Locking Values (PLV) or Cross Phase Locking Values (PLV)</strong>\n');
+cprintf([0,0.6,0], '<strong>[7] - Estimation of Phase Locking Values (PLV) or Cross Spectrum Phase Locking Values (crossPLV)</strong>\n');
 fprintf('\n');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,6 +100,8 @@ end
 
 T = readtable(file_path);                                                   % update settings table
 warning off;
+pbMothers = T.pbSpecMother(numOfPart);
+pbChildren = T.pbSpecChild(numOfPart);
 T.artRejectPLV(numOfPart) = { x };
 segLengthsString = cellfun(@(x) mat2str(x), {pbSpec(:).winLength}, ...
                             'UniformOutput', false);
@@ -107,6 +109,21 @@ T.plvSegLengths(numOfPart) = { strjoin(segLengthsString,',') };
 warning on;
 delete(file_path);
 writetable(T, file_path);
+
+% test, if passband specifications of mothers and children are completely 
+% overlapping for all dyads
+overlapping = cellfun(@(x,y) strcmp(x,y), pbMothers, pbChildren);
+usePLV = all(overlapping);
+
+if usePLV == 1
+    cprintf([0,0.6,0], 'There are no differences in the passband definitions of mother and child.\n');
+    cprintf([0,0.6,0], 'Phase locking values will be estimated.\n\n');
+else
+    cprintf([0,0.6,0], 'There are differences in the passband definitions of mother and child.\n');
+    cprintf([0,0.6,0], 'Cross spectrum phase locking values will be estimated.\n\n');
+end
+
+clear pbMothers pbChildren overlapping
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Segmentation, artifact rejection, PLV and mPLV estimation
@@ -191,52 +208,103 @@ for i = numOfPart
     cfg           = [];
     cfg.winlen    = pbSpec(j).winLength;                                    % window length for one PLV value in seconds
 
-    data_plv  = DEEP_phaseLockVal(cfg, data_hilbert);
-    data_mplv = DEEP_calcMeanPLV(data_plv);
-    clear data_hilbert
+    if usePLV
+      data_plv  = DEEP_phaseLockVal(cfg, data_hilbert);
+      data_mplv = DEEP_calcMeanPLV(data_plv);
+      clear data_hilbert
 
-    % export number of good trials into a spreadsheet
-    cfg           = [];
-    cfg.desFolder = [desPath '00_settings/'];
-    cfg.dyad = i;
-    cfg.type = 'plv';
-    cfg.param = pbSpec(j).name;
-    cfg.sessionStr = sessionStr;
-    DEEP_writeTbl(cfg, data_plv);
+      % export number of good trials into a spreadsheet
+      cfg           = [];
+      cfg.desFolder = [desPath '00_settings/'];
+      cfg.dyad = i;
+      cfg.type = 'plv';
+      cfg.param = pbSpec(j).name;
+      cfg.sessionStr = sessionStr;
+      DEEP_writeTbl(cfg, data_plv);
 
-    % export the PLVs into a *.mat file
-    cfg             = [];
-    cfg.desFolder   = strcat(desPath, '07b_plv/');
-    cfg.filename    = sprintf('DEEP_d%02d_07b_plv%s', i, ...
+      % export the PLVs into a *.mat file
+      cfg             = [];
+      cfg.desFolder   = strcat(desPath, '07b_plv/');
+      cfg.filename    = sprintf('DEEP_d%02d_07b_plv%s', i, ...
+                                    pbSpec(j).fileSuffix);
+      cfg.sessionStr  = sessionStr;
+
+      file_path = strcat(cfg.desFolder, cfg.filename, '_', ...
+                         cfg.sessionStr, '.mat');
+
+      fprintf('Saving PLVs (%s: %g-%gHz) of dyad %d in:\n', ...
+              pbSpec(j).name, data_plv.bpFreqMother, i);
+      fprintf('%s ...\n', file_path);
+      DEEP_saveData(cfg, 'data_plv', data_plv);
+      fprintf('Data stored!\n');
+      clear data_plv
+
+      % export the mean PLVs into a *.mat file
+      cfg             = [];
+      cfg.desFolder   = strcat(desPath, '07c_mplv/');
+      cfg.filename    = sprintf('DEEP_d%02d_07c_mplv%s', i, ...
                                 pbSpec(j).fileSuffix);
-    cfg.sessionStr  = sessionStr;
+      cfg.sessionStr  = sessionStr;
 
-    file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                       '.mat');
+      file_path = strcat(cfg.desFolder, cfg.filename, '_', ...
+                           cfg.sessionStr, '.mat');
 
-    fprintf('Saving PLVs (%s: %g-%gHz) of dyad %d in:\n', ...
-             pbSpec(j).name, data_plv.bpFreqMother, i);
-    fprintf('%s ...\n', file_path);
-    DEEP_saveData(cfg, 'data_plv', data_plv);
-    fprintf('Data stored!\n');
-    clear data_plv
+      fprintf('Saving mean PLVs (%s: %g-%gHz) of dyad %d in:\n', ...
+               pbSpec(j).name, data_mplv.bpFreqMother, i);
+      fprintf('%s ...\n', file_path);
+      DEEP_saveData(cfg, 'data_mplv', data_mplv);
+      fprintf('Data stored!\n\n');
+      clear data_mplv
+    else
+      data_crossplv  = DEEP_crossPhaseLockVal(cfg, data_hilbert);
+      data_mcrossplv = DEEP_calcMeanPLV(data_crossplv);
+      clear data_hilbert
 
-    % export the mean PLVs into a *.mat file
-    cfg             = [];
-    cfg.desFolder   = strcat(desPath, '07c_mplv/');
-    cfg.filename    = sprintf('DEEP_d%02d_07c_mplv%s', i, ...
+      % export number of good trials into a spreadsheet
+      cfg           = [];
+      cfg.desFolder = [desPath '00_settings/'];
+      cfg.dyad = i;
+      cfg.type = 'crossplv';
+      cfg.param = pbSpec(j).name;
+      cfg.sessionStr = sessionStr;
+      DEEP_writeTbl(cfg, data_crossplv);
+
+      % export the crossPLVs into a *.mat file
+      cfg             = [];
+      cfg.desFolder   = strcat(desPath, '07d_crossplv/');
+      cfg.filename    = sprintf('DEEP_d%02d_07d_crossplv%s', i, ...
+                                    pbSpec(j).fileSuffix);
+      cfg.sessionStr  = sessionStr;
+
+      file_path = strcat(cfg.desFolder, cfg.filename, '_', ...
+                         cfg.sessionStr, '.mat');
+
+      fprintf('Saving crossPLVs (%s: %g-%gHz and %g-%gHz) of dyad %d in:\n', ...
+              pbSpec(j).name, data_crossplv.bpFreqMother, ...
+              data_crossplv.bpFreqChild, i);
+      fprintf('%s ...\n', file_path);
+      DEEP_saveData(cfg, 'data_crossplv', data_crossplv);
+      fprintf('Data stored!\n');
+      clear data_crossplv
+
+      % export the mean PLVs into a *.mat file
+      cfg             = [];
+      cfg.desFolder   = strcat(desPath, '07e_mcrossplv/');
+      cfg.filename    = sprintf('DEEP_d%02d_07e_mcrossplv%s', i, ...
                                 pbSpec(j).fileSuffix);
-    cfg.sessionStr  = sessionStr;
+      cfg.sessionStr  = sessionStr;
 
-    file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                       '.mat');
+      file_path = strcat(cfg.desFolder, cfg.filename, '_', ...
+                           cfg.sessionStr, '.mat');
 
-    fprintf('Saving mean PLVs (%s: %g-%gHz) of dyad %d in:\n', ...
-             pbSpec(j).name, data_mplv.bpFreqMother, i);
-    fprintf('%s ...\n', file_path);
-    DEEP_saveData(cfg, 'data_mplv', data_mplv);
-    fprintf('Data stored!\n\n');
-    clear data_mplv
+      fprintf('Saving mean crossPLVs (%s: %g-%gHz and %g-%gHz) of dyad %d in:\n', ...
+               pbSpec(j).name, data_mcrossplv.bpFreqMother, ...
+               data_mcrossplv.bpFreqChild, i);
+      fprintf('%s ...\n', file_path);
+      DEEP_saveData(cfg, 'data_mcrossplv', data_mcrossplv);
+      fprintf('Data stored!\n\n');
+      clear data_mcrossplv      
+    end
   end
   clear cfg_allart
 end
@@ -244,4 +312,5 @@ end
 %% clear workspace
 clear cfg file_path sourceList numOfSources i artifactRejection ...
       artifactAvailable x choise T pbSpec j selection segmentation ...
-      segLengthsString
+      segLengthsString usePLV
+  
