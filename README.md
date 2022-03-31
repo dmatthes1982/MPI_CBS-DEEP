@@ -45,4 +45,13 @@ After downloading the project files from the GitHub repository (https://github.c
 ans =
 '/data/UserName/MATLAB/scripts/ DEEP/DEEP_eeg_pipeline'
 ```
-DEEP scripts should be ready to run in the MATLAB command window when you are in the right directory. If not, check if you have successfully installed the FieldTrip toolbox and the project files. 
+DEEP scripts should be ready to run in the MATLAB command window when you are in the right directory. If not, check if you have successfully installed the FieldTrip toolbox and the project files.
+
+![LaunchPipeline](images/LaunchPipeline.png)
+
+To launch the pipeline, type the following in the command window in MATLAB:
+
+```
+>> DEEP_main
+```
+
