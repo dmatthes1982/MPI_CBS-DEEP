@@ -63,11 +63,42 @@ To launch the pipeline, type the following in the command window in MATLAB:
 ```
 >> DEEP_main
 ```
-![LaunchPipeline2](images/LaunchPipeline2.png)
+
+```
+---------------------------------------------------------------------------------------
+DEEP: A dual-EEG Pipeline for adult and infant hyperscanning studies. - data processing
+Version: 0.2
+Copyright (C) 2018-2021, Daniel Matthes, MPI CBS
+---------------------------------------------------------------------------------------
+
+The default paths are:
+Source: /data/pt_01888/eegData/DualEEG_DEEP_rawData/
+Destination: /data/pt_01888/eegData/DualEEG_DEEP_processedData/
+
+Do you want to select the default paths?
+Select [y/n]: y
+
+The following sessions are available: 1
+The session owners are:
+```
 
 This command runs the **“DEEP_main”** script. **“DEEP_main”** selects sessions, data processing steps and dyads. Select "y" for default paths. Select **"n"** to add a new path. Enter a previous session number (i.e., enter session number such as 1 or 2) or create a new one (i.e., enter 0). Please note that each session data will be saved separately. A user can create more than one session to operate them simultaneously, if needed. You have to select the same number to continue your previous work in that session. **Importantly**, if a previously completed step is rerun within the same session, previous data will be overwritten. In the default path, the pipeline generates a “00_Settings” file that lists the parameters and user choices for preprocessing within a particular session.
 
-![SessionOption](images/SessionOption.png)
+```
+Please select one session or create a new one:
+[0] - Create new session
+[num] - Select session
+
+Session: 0
+
+Please select one option:
+[1] - Process all available dyads
+[2] - Process all new dyads
+[3] - Process specific dyads
+[4] - Quit data processing
+
+Option: 3
+```
 
 For illustration purposes, we will process a few dyads. Select **"3"** to process a specific dyad.
 
@@ -82,11 +113,22 @@ Next, we will explain each main data processing step and its associated function
 
 Select **"1"** to import data.
 
-![DataImport](images/DataImport.png)
+```
+A new session always will start with part:
+[1] - Import raw data
+```
 
 Then, select the dyads listed in the pop-up window (e.g., 25). This selection runs the **“DEEP_main_1”** script. **“DEEP_main_1”** imports EEG files from the source location. The user is asked to choose the electrodes to include in the data import. Select "1” to import all of the channels. Select "3" to exclude a specific set of channels (e.g., the ones on the periphery). In the pop-up window, choose the channels you would like to exclude from the start. Click **"OK."**
 
-![SelectChannels](images/SelectChannels.png)
+```
+[1] - Data import
+
+Select channels, which are NOT of interest?
+[1] - import all channels
+[2] - reject T7, T8, PO9, PO10, P7, P8, TP10
+[3] - reject specific selection
+Option: 
+```
 
 As shown below, we used a customized channel configuration (*EASYCAP GmbH*, Germany) to record the data presented in the paper. Green points illustrate the EEG channel names and numbers. “V” and “H” refer to vertical and horizontal eye electrodes, respectively. Blue and red points represent optode locations for functional near-infrared spectroscopy (fNIRS), which were kept empty during the recordings of the data used in the paper, as we only measured dual EEG in this experiment.
 
@@ -143,7 +185,23 @@ Continue data processing by selecting **"y."** If you have stopped the processin
 
 Continue data processing by selecting **"y."** If you have stopped the processing after step 3, select step **"4"** to proceed. This selection will run the **“DEEP_main_4”** script. **“DEEP_main_4”** (1) finds ICA components for eye movements, which show a minimum of 80 % (i.e., default value) correlation with EOGV and EOGH, (2) verifies the estimated components by using the ft_icabrowser function, and allows the user to add additional components to the selection, (3) corrects the EEG data, (4) recovers bad channels, and (5) applies an offline re-referencing method.
 
-![SelectReference](images/SelectReference.png)
+```
+Option: 4
+
+Selection of specific dyads...
+
+The following dyads will be processed in the selected part [4]:
+25 
+
+[4] - Preproc II: ICA-based artifact correction, bad channel recovery, re-referencing
+
+Determine available channels...
+Please select favoured reference:
+[1] - Common average reference
+[2] - Linked mastoid ('TP9', 'TP10')
+[3] - Robust average reference
+Option: 
+```
 
 Select **”1”** for re-referencing using the common average method. 
 Select **”2”** for re-referencing using the linked mastoids method. 
@@ -151,7 +209,26 @@ Select **”3”** for re-referencing using the robust averaging method.
 
 Next, select **”y”** to use the default threshold (i.e., 0.8) for the estimation of eye movement components. If you want to change the threshold value, select **”n”** and define another value.
 
-![ArtifactCorrection](images/ArtifactCorrection.png)
+```
+Do you want to use the default threshold (0.8) for EOG-artifact estimation with mother data?
+Select [y/n]: y
+
+Dyad 25
+ICA-based artifact correction
+
+Load ICA result...
+Load original EOG channels...
+
+Determine EOG-correlating components at mother...
+Determine EOG-correlating components at child...
+
+Select ICA components which shall be subtracted from mother's data...
+Select components to reject!
+Components which exceeded the selected EOG correlation threshold are already marked as bad.
+These are:
+[1] - component 2 - 88.2 % correlation
+[2] - component 10 - -93.8 % correlation
+```
 
 This selection opens the *ft_icabrowser* window to inspect eye movement artifacts. The pipeline highlights detected components by marking them as **"Reject"**. This can be undone by clicking on the **"Reject"** tab once, which turns into **”Keep”**. As illustrated below, *ft_icabrowser* (for more information, see https://www.fieldtriptoolbox.org/reference/ft_icabrowser/) presents a GUI showing the 1) power spectrum, 2) variance over time, 3) the topography of the components, and 4) time course of the rejected components. There is an option to save this information as a *.pdf* file. Click **"Quit"** after checking the components.
 
@@ -170,7 +247,33 @@ This selection opens the *ft_icabrowser* window to inspect eye movement artifact
 
 Continue data processing by selecting **"y."** If you have stopped the processing after step 4, select step "5" to proceed. This selection will run the **“DEEP_main_5”** script. **“DEEP_main_5”** runs (1) automatic artifact detection, (2) manual artifact detection (verification). You can choose among the four automatic artifact detection methods and adjust the thresholds manually:
 
-![ArtifactDetection](images/ArtifactDetection.png)
+```
+Continue data processing with:
+[5] - Automatic and manual detection of artifacts?
+
+Select [y/n]: y
+
+[5] - Automatic and manual artifact detection
+
+Please select an artifact detection method:
+[1] - minmax threshold
+[2] - range threshold within 200us, sliding window
+[3] - stddev threshold within 200us, sliding window
+[4] - mutiple of median absolute deviation, sliding window
+Option: 1
+
+Do you want to use the default thresholds (mother: 75 µV - child: 75 uV)  for automatic artifact detection?
+Select [y/n]: y
+
+Do you want to mark segments as artificats in which channels are dead or in saturation?
+Select [y/n]: y
+
+Do you want to include all channels in artifact detection?
+Select [y/n]: y
+
+Do you want to load existing manual selected artifacts?
+Select [y/n]: y
+```
 
 Select **"1"** for the min-max threshold (default: 'minmax', +-75 µV).
 
@@ -197,7 +300,18 @@ This selection opens artifact maps for each condition across time and channels a
 
 Continue data processing by selecting **"y."** If you have stopped the processing after step 5, select step "6" to proceed. This selection will run the **“DEEP_main_6”** script. **“DEEP_main_6”** handles narrow band filtering and Hilbert transformation.
 
-![BandpassFilter](images/BandpassFilter.png)
+```
+[6] - Narrow band filtering and Hilbert transform
+
+Do you want to use the default passbands?
+-------------------
+theta:  4 - 7 Hz
+alpha:  8 - 12 Hz
+beta:   13 - 30 Hz
+gamma:  31 - 48 Hz
+-------------------
+Select [y/n]:
+```
 
 Select **"y"** to use the default passbands. These passband selections are only recommended when analyzing dual EEG data with older participants such as two adults. To define separate frequency ranges for the adult and the infant/child data, type **"n"** and enter passband values manually. Two separate windows will open to define adult and infant passbands.
 
@@ -214,7 +328,26 @@ Select **"y"** to use the default passbands. These passband selections are only 
 
 Continue data processing by selecting **"y"**. If you have stopped the processing after step 6, select step "7" to proceed. This selection will run the **“DEEP_main_7”** script. **“DEEP_main_7”** (1) segments Hilbert phase data for PLV or cross-frequency PLV estimations and splits the data of every condition into sub-trials of 1 or 5 seconds epochs, (2) executes artifact rejection, (3) estimates PLVs or cross-frequency PLVs, (4) estimates mean PLVs or cross-frequency PLVs.
 
-![PLVEstimation](images/PLVEstimation.png)
+```
+Continue data processing with:
+[7] - Estimation of Phase Locking Values (PLV)?
+
+Select [y/n]: y
+
+[7] - Estimation of Phase Locking Values (PLV) or Cross Spectrum Phase Locking Values (crossPLV)
+
+Should rejection of detected artifacts be applied before PLV estimation?
+Select [y/n]: y
+
+Do you want to use default segment durations?
+-------------------
+theta:  5 sec
+alpha:  1 sec
+beta:   1 sec
+gamma:  1 sec
+-------------------
+Select [y/n]: y
+```
 
 Select **“y”** to use the predefined epoch durations for each frequency band. Type **“n”** to define different epoch durations for each frequency band manually.
 
@@ -234,11 +367,25 @@ Select **“y”** to use the predefined epoch durations for each frequency band
 
 Continue data processing by selecting **"y."** If you have stopped the processing after step 6, select step "8" to proceed. This selection will run the **“DEEP_main_8”** script. **“DEEP_main_8”** calculates 1) time-frequency responses (TFRs), and 2) power spectral densities (PSDs) of the preprocessed data. This step is used to analyze EEG data for each participant individually.
 
-![PowerAnalysis](images/PowerAnalysis.jpg)
+```
+[8] - Power analysis (TFR, pWelch)
+
+Should the time-frequency response calculated?
+Select [y/n]: y
+
+Dyad 32
+Load preprocessed data...
+```
 
 Select **"y"** to calculate the TFRs. 
 
-![PowerAnalysisSelection](images/PowerAnalysisSelection.jpg)
+```
+Should the power spectrum by using Welch's method be calculated?
+Select [y/n]: y
+
+Should rejection of detected artifacts be applied before power estimation?
+Select [y/n]: y
+```
 
 Select **"y"** to calculate the PSDs. Select **"y"** to reject artifacts that were defined at previous steps.
 
@@ -254,11 +401,22 @@ Select **"y"** to calculate the PSDs. Select **"y"** to reject artifacts that we
 
 Continue data processing by selecting **"y."** If you have stopped the processing after step 7 or 8, select step **"9"** to proceed. This selection will run the **“DEEP_main_9”** script. “DEEP_main_9” averages PLVs, TFRs and PSDs across dyads or participants.
 
-![AveragingOverDyads](images/AveragingOverDyads.jpg)
+```
+[9] - Averaging over dyads
+
+Averaging mPLVs over dyads?
+Select [y/n]: y
+```
 
 Select **"y"** to average PLVs or cross-frequency PLVs over dyads. Select dyads for averaging.
 
-![AveragingOverDyadsOptions](images/AveragingOverDyadsOptions.jpg)
+```
+Averaging TFR over dyads?
+Select [y/n]: y
+
+Averaging power over dyads?
+Select [y/n]: y
+```
 
 Select **"y"** to average TFRs over participants. Select **"y"** to average PSDs over participants. Select participants’ numbers to take the average of their data.
 
