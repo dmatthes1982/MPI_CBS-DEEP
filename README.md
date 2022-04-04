@@ -132,7 +132,9 @@ Option:
 
 As shown below, we used a customized channel configuration (*EASYCAP GmbH*, Germany) to record the data presented in the paper. Green points illustrate the EEG channel names and numbers. “V” and “H” refer to vertical and horizontal eye electrodes, respectively. Blue and red points represent optode locations for functional near-infrared spectroscopy (fNIRS), which were kept empty during the recordings of the data used in the paper, as we only measured dual EEG in this experiment.
 
-![Cap](images/Cap.png)
+<p align="center">
+  <img src="images/Cap.png" alt="cap" width=50% class="center"/>
+</p>
 
 **Important note:** In the current version of the pipeline, only data recorded with the Brain Products system can be analyzed. If you are using another system, you can convert your data and process it outside of the GUI. In this link (https://github.com/dmatthes1982/MPI_CBS-DEEP/tree/master/dataconversion), we provide two example scripts: 1) to convert data obtained with a BioSemi system (i.e., in .bdf format) 2) to call DEEP sub-functions to operate the pipeline afterwards. Users can open the “DEEP_importBdf” function and copy their dataset into a folder on their computers and change the directory to the destination of the dataset. Further instructions can be found in the scripts.
 
@@ -315,8 +317,9 @@ Select [y/n]:
 
 Select **"y"** to use the default passbands. These passband selections are only recommended when analyzing dual EEG data with older participants such as two adults. To define separate frequency ranges for the adult and the infant/child data, type **"n"** and enter passband values manually. Two separate windows will open to define adult and infant passbands.
 
-![BandpassFilterMother](images/BandpassSelectionMother.png)
-![BandpassFilterChild](images/BandpassSelectionChild.png)
+<p align="center">
+  <img src="images/BandpassSelection.png" alt="BandpassFilter" width=60% class="center"/>
+</p>
 
 **DEEP_main_6 Functions:**
 - **DEEP_pbSelectbox:** Displays a GUI window for the specification of passbands. It returns a cell array including the minimum and maximum frequencies of each passband.
