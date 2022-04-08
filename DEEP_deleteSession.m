@@ -6,9 +6,12 @@ DEEP_init;
 
 cprintf([0,0.6,0], '<strong>---------------------------------------------------------------------</strong>\n');
 cprintf([0,0.6,0], '<strong>DEEP: A dual-EEG Pipeline for adult and infant hyperscanning studies.</strong>\n');
-cprintf([0,0.6,0], '<strong>Clone session script</strong>\n');
-cprintf([0,0.6,0], 'Copyright (C) 2018-2019, Daniel Matthes, MPI CBS\n');
+cprintf([0,0.6,0], '<strong>Delete session script</strong>\n');
+cprintf([0,0.6,0], 'Copyright (C) 2022, Daniel Matthes, HTWK Leipzig\n');
 cprintf([0,0.6,0], '<strong>---------------------------------------------------------------------</strong>\n');
+cprintf([0,0.6,0], '\n');
+
+warning('Please be careful! Data once deleted cannot be recovered!')
 
 % -------------------------------------------------------------------------
 % Path settings
@@ -72,8 +75,6 @@ for i=1:1:numOfFiles
 end
 
 sessionNum    = unique(sessionNum);
-newSessionNum = max(sessionNum) + 1;
-newSessionStr = sprintf('%03d', newSessionNum);
 y = sprintf('%d ', sessionNum);
 
 userList = cell(1, length(sessionNum));
@@ -117,12 +118,12 @@ clear fileList numOfFiles fileListCopy y userList match ...
       filePath cmdout attrib
 
 % -------------------------------------------------------------------------
-% Clone session
+% Delete session
 % -------------------------------------------------------------------------
-fprintf('<strong>Creating new session number %d...</strong>\n\n', newSessionNum);
+fprintf('<strong>Delete session %d...</strong>\n\n', sessionNum);
 for i = 1:1:length(folderList)
   folder = folderList{i};
-  fprintf('Cloning data in folder: %s...\n', folder);
+  fprintf('Deleting data in folder: %s...\n', folder);
   
   tmpPath   = strcat(path, folder);
   homePath  = fileparts(mfilename('fullpath'));
@@ -135,7 +136,7 @@ for i = 1:1:length(folderList)
   fileList      = cellfun(@(x) strsplit(x, '.'), fileList, ...
                           'UniformOutput', false);
   fileList      = cat(1, fileList{:});
-  if ~isempty(fileList)  
+  if ~isempty(fileList)
     fileExt       = unique(fileList(:,2));
     fileList      = fileList(:,1);
     sessionFiles  = regexp(fileList, sessionStr);
@@ -146,17 +147,16 @@ for i = 1:1:length(folderList)
     cd(tmpPath);
     for j = 1:1:length(fileList)
       file = fileList{j};
-      copyfile( strcat(file, sessionStr, '.', fileExt{1}), ...
-                strcat(file, newSessionStr, '.', fileExt{1}) ); 
+      filename = strcat(file, sessionStr, '.', fileExt{1}); 
+      delete(filename); 
     end
   end
   cd(homePath);
 end
 
-fprintf('\n<strong>Cloning of session %d completed. Session %d created!</strong>\n', ...
-        sessionNum, newSessionNum);
+fprintf('\n<strong>Deletion of session %d completed.</strong>\n', ...
+        sessionNum);
 
 %% clear workspace
-clear folder folderList i j newSessionNum path selection sessionNum ...
-      tmpPath x sessionStr file fileExt fileList homePath sessionFiles ...
-      newSessionStr tf
+clear folder folderList i j path selection sessionNum tmpPath x sessionStr ...
+      file fileExt filename fileList homePath sessionFiles tf
