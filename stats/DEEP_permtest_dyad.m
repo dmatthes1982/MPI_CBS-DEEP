@@ -166,9 +166,7 @@ numOfPermutations = 1000;
 for i_file = 1:numOfFiles
     org_dyad = dyads(i_file);
     inc = 0;
-    for org_part = 1:2
-        rand_dyads  = randi(length(listOfDyads), 1, fix(numOfPermutations/2));
-        rand_part   = randi(2, 1, fix(numOfPermutations/2));
+    rand_dyads  = randi(length(listOfDyads), 1, fix(numOfPermutations));    
 
         flag = true;
         while flag
@@ -180,7 +178,7 @@ for i_file = 1:numOfFiles
             end
         end
 
-        for i_perm = 1:fix(numOfPermutations/2)
+        for i_perm = 1:fix(numOfPermutations)
             file_data1    = sprintf(['DEEP_d%02.f_06b_hilbert' ... 
                 passband '_' sessionStr], org_dyad);
             file_data2    = sprintf(['DEEP_d%02.f_06b_hilbert' ... 
@@ -208,19 +206,20 @@ for i_file = 1:numOfFiles
             first_field1 = fieldnames(data_sub1);
             first_field2 = fieldnames(data_sub2);
             
-            % mix data from two different dyads
-            data_hilbert.mother = data_sub1.(first_field1{1}).(part_id(org_part));
-            data_hilbert.child = data_sub2.(first_field2{1}).(part_id(rand_part(i_perm)));
+            % create surrogate by mixing data of mother with unfamiliar
+            % infants
+            data_hilbert.mother = data_sub1.(first_field1{1}).mother;
+            data_hilbert.child = data_sub2.(first_field2{1}).child;
             data_hilbert.centerFreqMother = data_sub1.(first_field1{1}).centerFreqMother;
             data_hilbert.bpFreqMother = data_sub1.(first_field1{1}).bpFreqMother;
-            data_hilbert.centerFreqChild = data_sub1.(first_field1{1}).centerFreqChild;
-            data_hilbert.bpFreqChild = data_sub1.(first_field1{1}).bpFreqChild;
+            data_hilbert.centerFreqChild = data_sub2.(first_field1{1}).centerFreqChild;
+            data_hilbert.bpFreqChild = data_sub2.(first_field1{1}).bpFreqChild;
             
             first_field1 = fieldnames(artifact_sub1);
             first_field2 = fieldnames(artifact_sub2);
-                        
-            cfg_allart.mother = artifact_sub1.(first_field1{1}).(part_id(org_part));
-            cfg_allart.child = artifact_sub2.(first_field2{1}).(part_id(rand_part(i_perm)));
+         
+            cfg_allart.mother = artifact_sub1.(first_field1{1}).mother;
+            cfg_allart.child = artifact_sub2.(first_field2{1}).child;   
             
             trial_mother = data_hilbert.mother.trialinfo;
             trial_child = data_hilbert.child.trialinfo;
@@ -308,21 +307,26 @@ for i_file = 1:numOfFiles
             % fake PLV estimation
             cfg           = [];
             cfg.winlen    = 1;
-            data_mplv     = DEEP_phaseLockVal(cfg,  data_hilbert);
-            data_mplv     = DEEP_calcMeanPLV(data_mplv);
+            
+            if data_hilbert.bpFreqMother == data_hilbert.bpFreqChild
+                data_mplv = DEEP_phaseLockVal(cfg,  data_hilbert);               
+            else
+                data_mplv = DEEP_crossPhaseLockVal(cfg,  data_hilbert);     %if freq. bands differ calculate crossPLV
+            end
+            
+            data_mplv = DEEP_calcMeanPLV(data_mplv);
 
             % save preprocessed data
             desFolder   = strcat(desPath);
             file_path = strcat(desFolder, sprintf(['DEEP_d%02d', ... 
                 '_perm%04d', passband],...
-                org_dyad, inc), '.mat');
+                org_dyad, inc), '_', '.mat');           
             fprintf('The surrogate plv data of dyad will be saved in '); 
             fprintf('%s ...\n', file_path);
             save(file_path, 'data_mplv');
             fprintf('Data stored!\n\n');
             inc = inc + 1;
         end
-    end
 end
 
 clear;
