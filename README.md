@@ -1,6 +1,12 @@
 # MPI_CBS-DEEP
 
-## DEEP: A dual-EEG Pipeline for adult and infant hyperscanning studies. - User Manual
+## DEEP: A dual EEG pipeline for developmental hyperscanning studies - User Manual
+
+Please cite the reference paper when you have used DEEP in your study.
+
+_Ezgi Kayhan, Daniel Matthes, Ira Marriott Haresign, Anna Bánki, Christine Michel, Miriam Langeloh, Sam Wass and Stefanie Hoehl._ [DEEP: A dual EEG pipeline for developmental hyperscanning studies.](https://doi.org/10.1016/j.dcn.2022.101104) Developmental Cognitive Neuroscience, 2022; 2022:101104.
+
+[![DOI:10.1016/j.dcn.2022.101104](https://zenodo.org/badge/DOI/10.1016/j.dcn.2022.101104.svg)](https://doi.org/10.1016/j.dcn.2022.101104)
 
 ### Table of Contents
 1. [ Overview. ](#overview)
